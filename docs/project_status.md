@@ -2,21 +2,21 @@
 
 **Last updated**: 2026-02-07
 **Current phase**: Foundation (Wave 1)
-**Overall progress**: 2 / 16 features complete
+**Overall progress**: 3 / 16 features complete
 
 ---
 
 ## Progress Summary
 
-| Status      | Count | Features |
-| ----------- | ----- | -------- |
-| Not Started | 14    | 03–16    |
-| In Progress | 0     | —        |
-| Complete    | 2     | 01, 02   |
-| Blocked     | 0     | —        |
+| Status      | Count | Features   |
+| ----------- | ----- | ---------- |
+| Not Started | 13    | 04–16      |
+| In Progress | 0     | —          |
+| Complete    | 3     | 01, 02, 03 |
+| Blocked     | 0     | —          |
 
 ```
-Progress: [██░░░░░░░░░░░░░░░░░░] 12%
+Progress: [███░░░░░░░░░░░░░░░░░] 18%
 ```
 
 ---
@@ -29,7 +29,7 @@ Progress: [██░░░░░░░░░░░░░░░░░░] 12%
 | --- | ---------------------------------------------------------- | ----------- | ------------ | --------------------------------------- |
 | 01  | [Backend Scaffolding](plans/01-backend-scaffolding.md)     | ✅ Complete | None         | pom.xml, application config, main class |
 | 02  | [Docker Infrastructure](plans/02-docker-infrastructure.md) | ✅ Complete | None         | docker-compose.yml, Dockerfile          |
-| 03  | [Angular Scaffolding](plans/03-angular-scaffolding.md)     | Not Started | None         | ng new, proxy config, environments      |
+| 03  | [Angular Scaffolding](plans/03-angular-scaffolding.md)     | ✅ Complete | None         | Angular 17.3, proxy, environments       |
 
 ### Wave 2 — Database
 
@@ -83,8 +83,9 @@ The longest sequential chain that determines minimum timeline:
 
 ## Change Log
 
-| Date       | Change                                                                                       |
-| ---------- | -------------------------------------------------------------------------------------------- |
-| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.  |
-| 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created. |
-| 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                           |
+| Date       | Change                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments. |
+| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.   |
+| 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created.  |
+| 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                            |

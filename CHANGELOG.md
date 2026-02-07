@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - .dockerignore file for optimized builds
 - Maven build configuration
 - Flyway migration support
+- Angular 17.3 frontend project with standalone components
+- Frontend proxy configuration for backend API (proxy.conf.json)
+- Environment files for development and production configurations
+- SCSS styling support and routing setup
+- Frontend .gitignore entries (node_modules, dist, .angular)
+- Cleaned up default Angular template with router-outlet
 - Project documentation structure (PRD, implementation plans, MVP spec)
 
 ### In Progress
