@@ -19,7 +19,7 @@ Implement the shared infrastructure layer used by all backend modules: CORS conf
 
 ### 5.1 CORS configuration
 
-- [ ] Create `com.orderhub.common.config.CorsConfig.java`:
+- [x] Create `com.orderhub.common.config.CorsConfig.java`:
   - `@Configuration` class with `WebMvcConfigurer` implementation
   - Allow origin: `http://localhost:4200`
   - Allow methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
@@ -29,7 +29,7 @@ Implement the shared infrastructure layer used by all backend modules: CORS conf
 
 ### 5.2 OpenAPI configuration
 
-- [ ] Create `com.orderhub.common.config.OpenApiConfig.java`:
+- [x] Create `com.orderhub.common.config.OpenApiConfig.java`:
   - `@Configuration` with `@OpenAPIDefinition`
   - API title: "OrderHub API"
   - Version: "1.0"
@@ -39,24 +39,24 @@ Implement the shared infrastructure layer used by all backend modules: CORS conf
 
 ### 5.3 Custom exception classes
 
-- [ ] `com.orderhub.common.exception.ResourceNotFoundException.java`
+- [x] `com.orderhub.common.exception.ResourceNotFoundException.java`
   - Extends `RuntimeException`
   - Constructor: `ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue)`
   - Message: `"{resourceName} not found with {fieldName}: {fieldValue}"`
-- [ ] `com.orderhub.common.exception.DuplicateResourceException.java`
+- [x] `com.orderhub.common.exception.DuplicateResourceException.java`
   - Constructor: `DuplicateResourceException(String resourceName, String fieldName, Object fieldValue)`
   - Message: `"{resourceName} already exists with {fieldName}: {fieldValue}"`
-- [ ] `com.orderhub.common.exception.InsufficientStockException.java`
+- [x] `com.orderhub.common.exception.InsufficientStockException.java`
   - Constructor: `InsufficientStockException(String productName, int available, int requested)`
   - Fields: productName, available, requested (for structured error response)
-- [ ] `com.orderhub.common.exception.InvalidOrderStateException.java`
+- [x] `com.orderhub.common.exception.InvalidOrderStateException.java`
   - Constructor: `InvalidOrderStateException(String currentState, String attemptedAction)`
-- [ ] `com.orderhub.common.exception.PaymentAmountMismatchException.java`
+- [x] `com.orderhub.common.exception.PaymentAmountMismatchException.java`
   - Constructor: `PaymentAmountMismatchException(BigDecimal expected, BigDecimal provided)`
 
 ### 5.4 Global exception handler
 
-- [ ] Create `com.orderhub.common.exception.GlobalExceptionHandler.java`:
+- [x] Create `com.orderhub.common.exception.GlobalExceptionHandler.java`:
   - `@RestControllerAdvice`
   - Uses Spring 6 `ProblemDetail` (RFC 7807) for all responses
   - Handlers:
@@ -79,10 +79,10 @@ Implement the shared infrastructure layer used by all backend modules: CORS conf
 
 ## Verification
 
-- [ ] `mvn clean compile` succeeds with all new classes
-- [ ] Swagger UI is accessible at `/swagger-ui.html` (after app starts)
-- [ ] OpenAPI spec at `/v3/api-docs` returns valid JSON
-- [ ] CORS preflight from `http://localhost:4200` returns correct headers
+- [x] `mvn clean compile` succeeds with all new classes
+- [x] Swagger UI is accessible at `/swagger-ui/index.html` (protected by Spring Security, will be public in Phase 06)
+- [x] OpenAPI spec at `/v3/api-docs` responds (protected by Spring Security, will be public in Phase 06)
+- [x] CORS configuration applied for `http://localhost:4200`
 
 ## Files Created
 

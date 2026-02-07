@@ -5,7 +5,18 @@ All notable changes to the OrderHub MVP project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0]
+## [Unreleased]
+
+### Added
+
+- Common module infrastructure:
+  - CORS configuration for Angular frontend (localhost:4200)
+  - OpenAPI/Swagger configuration with API documentation structure
+  - Custom exception classes (ResourceNotFound, DuplicateResource, InsufficientStock, InvalidOrderState, PaymentAmountMismatch)
+  - Global exception handler with RFC 7807 Problem Detail responses
+  - Standardized error handling for all backend modules
+
+## [1.0.0] - 2026-02-08
 
 ### Added
 
@@ -35,27 +46,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### In Progress
 
-- Backend module development (common, auth, catalog, inventory, orders, payments)
+- Backend module development (auth, catalog, inventory, orders, payments)
 - Frontend feature development (auth, catalog, cart, checkout, orders, admin)
 - API documentation with OpenAPI/Swagger
 - Unit and integration test suites
 
-## [0.1.0] - TBD
+---
 
-### Planned Features
-
-- User authentication and authorization (JWT-based)
-- Product catalog management
-- Shopping cart functionality
-- Order processing with atomic inventory updates
-- Payment processing with idempotency support
-- Admin dashboard for inventory and order management
-- Optimistic locking for inventory and products
-- RESTful API endpoints (base path: `/api/v1/`)
-- Responsive Angular UI with standalone components
-- Signal-based state management
-
-### Technical Infrastructure
+## Technical Infrastructure
 
 - **Backend**: Java 17, Spring Boot 3, Spring Data JPA, PostgreSQL 16
 - **Frontend**: Angular 17+, TypeScript 5.x, Angular Signals, SCSS

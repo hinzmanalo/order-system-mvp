@@ -1,8 +1,8 @@
 # OrderHub MVP — Project Status
 
 **Last updated**: 2026-02-08
-**Current phase**: Foundation (Wave 2)
-**Overall progress**: 4 / 16 features complete
+**Current phase**: Foundation (Wave 3)
+**Overall progress**: 5 / 16 features complete
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Status      | Count | Features |
 | ----------- | ----- | -------- |
-| Not Started | 12    | 05–16    |
+| Not Started | 11    | 06–16    |
 | In Progress | 0     | —        |
-| Complete    | 4     | 01–04    |
+| Complete    | 5     | 01–05    |
 | Blocked     | 0     | —        |
 
 ```
-Progress: [█████░░░░░░░░░░░░░░░] 25%
+Progress: [██████░░░░░░░░░░░░░░] 31%
 ```
 
 ---
@@ -41,7 +41,7 @@ Progress: [█████░░░░░░░░░░░░░░░] 25%
 
 | #   | Feature                                    | Status      | Dependencies | Notes                                              |
 | --- | ------------------------------------------ | ----------- | ------------ | -------------------------------------------------- |
-| 05  | [Common Module](plans/05-common-module.md) | Not Started | 01, 04       | CORS, OpenAPI, exceptions, GlobalExceptionHandler  |
+| 05  | [Common Module](plans/05-common-module.md) | ✅ Complete | 01, 04       | CORS, OpenAPI, exceptions, GlobalExceptionHandler  |
 | 06  | [Auth Backend](plans/06-auth-backend.md)   | Not Started | 05           | JWT, Spring Security, registration, login, refresh |
 
 ### Wave 4 — Backend Domain Modules (sequential)
@@ -85,6 +85,7 @@ The longest sequential chain that determines minimum timeline:
 
 | Date       | Change                                                                                        |
 | ---------- | --------------------------------------------------------------------------------------------- |
+| 2026-02-08 | Feature 05 (Common Module) completed. CORS config, OpenAPI setup, exception handlers added.  |
 | 2026-02-08 | Feature 04 (Database Schema) completed. 7 Flyway migrations applied, seed data loaded.        |
 | 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments. |
 | 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.   |
