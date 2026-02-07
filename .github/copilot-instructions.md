@@ -87,3 +87,231 @@ Inter-module calls use direct service injection (same JVM), not REST.
 ## others
 
 Always put smile emkoji at the end of the message.
+
+# Copilot Instructions for Java Logging and Comments
+
+## Java Logging Best Practices
+
+### Logging Framework
+
+- Use SLF4J as the logging facade with a compatible implementation (Logback, Log4j2)
+- Always use parameterized logging instead of string concatenation
+- Example: `logger.info("User {} logged in at {}", username, timestamp);`
+
+### Log Levels
+
+- **TRACE**: Very detailed information, typically only enabled during development
+- **DEBUG**: Detailed information for debugging, disabled in production
+- **INFO**: Informational messages about application progress and state
+- **WARN**: Potentially harmful situations that should be investigated
+- **ERROR**: Error events that might still allow the application to continue
+- **FATAL**: Very severe errors that will lead to application abort (Log4j only)
+
+### Logging Guidelines
+
+1. **Never log sensitive data**: passwords, tokens, credit cards, PII
+2. **Use appropriate log levels**: Don't use `error` for informational messages
+3. **Include context**: User ID, transaction ID, correlation ID when relevant
+4. **Avoid logging in loops**: Can cause performance issues and log bloat
+5. **Log exceptions properly**: Include the full stack trace
+   ```java
+   try {
+       // risky operation
+   } catch (Exception e) {
+       logger.error("Failed to process order {}", orderId, e);
+   }
+   ```
+6. **Guard expensive operations**: Use level checks for complex log message creation
+   ```java
+   if (logger.isDebugEnabled()) {
+       logger.debug("Complex data: {}", expensiveToString());
+   }
+   ```
+
+### What to Log
+
+- **DO LOG**:
+  - Application startup/shutdown
+  - Configuration changes
+  - Significant business events
+  - External API calls (request/response)
+  - Authentication/authorization events
+  - State transitions
+  - Performance metrics
+  - Recoverable errors
+
+- **DON'T LOG**:
+  - Every method entry/exit in production
+  - Sensitive data (passwords, tokens, etc.)
+  - Full object dumps in production
+  - Redundant information already captured elsewhere
+
+## Java Comments Best Practices
+
+### JavaDoc Comments
+
+Use JavaDoc for all public classes, interfaces, methods, and fields:
+
+```java
+/**
+ * Processes customer orders and updates inventory.
+ *
+ * @param order the customer order to process, must not be null
+ * @param inventory the current inventory state
+ * @return the updated order with status
+ * @throws OrderProcessingException if the order cannot be fulfilled
+ * @throws IllegalArgumentException if order or inventory is null
+ * @since 1.2.0
+ */
+public Order processOrder(Order order, Inventory inventory)
+    throws OrderProcessingException {
+    // implementation
+}
+```
+
+### JavaDoc Guidelines
+
+1. **First sentence is critical**: It appears in summary tables, make it concise
+2. **Document parameters**: Explain what they are, constraints, and null handling
+3. **Document return values**: Explain what is returned and when
+4. **Document exceptions**: Explain when and why they are thrown
+5. **Include examples**: For complex APIs, show usage examples
+6. **Use `@since`**: Tag when adding new public APIs
+7. **Use `@deprecated`**: Mark deprecated APIs with migration guidance
+
+### Implementation Comments
+
+```java
+// GOOD: Explains WHY, not WHAT
+// Using HashMap instead of TreeMap because we don't need sorted keys
+// and HashMap provides O(1) lookup vs O(log n)
+Map<String, User> userCache = new HashMap<>();
+
+// BAD: Restates the obvious code
+// Create a new HashMap
+Map<String, User> userCache = new HashMap<>();
+```
+
+### Comment Guidelines
+
+1. **Explain WHY, not WHAT**: Code shows what, comments explain why
+2. **Document business rules**: Explain the business logic behind decisions
+3. **Note workarounds**: Explain temporary fixes and technical debt
+   ```java
+   // WORKAROUND: Legacy API doesn't handle null, converting to empty string
+   // TODO: Remove once we upgrade to v2.0 (ticket: PROJ-1234)
+   ```
+4. **Warn about gotchas**: Document non-obvious behavior or constraints
+5. **Keep comments up-to-date**: Outdated comments are worse than no comments
+6. **Avoid commented-out code**: Use version control instead
+7. **Use TODO/FIXME/XXX appropriately**:
+   - `TODO`: Future enhancement
+   - `FIXME`: Known issue that needs fixing
+   - `XXX`: Warning about problematic code
+
+### Class-Level Comments
+
+```java
+/**
+ * Service for managing user authentication and session handling.
+ * <p>
+ * This service integrates with OAuth 2.0 providers and maintains
+ * session state in Redis for horizontal scalability.
+ * </p>
+ * <p>
+ * Thread-safety: This class is thread-safe and can be used as a singleton.
+ * </p>
+ *
+ * @author Development Team
+ * @version 2.1.0
+ * @since 1.0.0
+ */
+public class AuthenticationService {
+    // implementation
+}
+```
+
+### Interface Documentation
+
+```java
+/**
+ * Strategy for caching user data with different eviction policies.
+ * <p>
+ * Implementations of this interface must be thread-safe.
+ * </p>
+ *
+ * @see LRUCacheStrategy
+ * @see TTLCacheStrategy
+ */
+public interface CacheStrategy {
+    // methods
+}
+```
+
+## Code Examples
+
+### Logger Declaration
+
+```java
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+}
+```
+
+### Comprehensive Example
+
+```java
+/**
+ * Handles user registration with validation and notification.
+ *
+ * @param request the registration request containing user details
+ * @return the created user with generated ID
+ * @throws ValidationException if request data is invalid
+ * @throws DuplicateUserException if email already exists
+ */
+public User registerUser(RegistrationRequest request)
+    throws ValidationException, DuplicateUserException {
+
+    logger.info("Processing registration for email: {}", request.getEmail());
+
+    // Validate early to fail fast
+    if (!isValidEmail(request.getEmail())) {
+        logger.warn("Invalid email format rejected: {}", request.getEmail());
+        throw new ValidationException("Invalid email format");
+    }
+
+    try {
+        User user = userRepository.create(request);
+        logger.info("User created successfully with ID: {}", user.getId());
+
+        // Send welcome email asynchronously to avoid blocking
+        notificationService.sendWelcomeEmail(user);
+
+        return user;
+
+    } catch (DuplicateKeyException e) {
+        logger.error("Duplicate email registration attempt: {}",
+                     request.getEmail(), e);
+        throw new DuplicateUserException("Email already registered", e);
+    } catch (Exception e) {
+        logger.error("Unexpected error during registration for email: {}",
+                     request.getEmail(), e);
+        throw new RuntimeException("Registration failed", e);
+    }
+}
+```
+
+## When Generating Code
+
+When GitHub Copilot generates Java code, it should:
+
+- Include appropriate SLF4J logger declarations
+- Add JavaDoc for all public methods and classes
+- Use parameterized logging
+- Log at appropriate levels (INFO for business events, ERROR for exceptions)
+- Include inline comments only for complex logic or business rules
+- Document all exceptions that can be thrown
+- Include null checks and document null handling in JavaDoc

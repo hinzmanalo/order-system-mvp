@@ -46,6 +46,26 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ProblemDetail handleConflict(ConflictException ex, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setType(URI.create(PROBLEM_BASE_URL + "conflict"));
+        problemDetail.setTitle("Conflict");
+        problemDetail.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ProblemDetail handleUnauthorized(UnauthorizedException ex, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problemDetail.setType(URI.create(PROBLEM_BASE_URL + "unauthorized"));
+        problemDetail.setTitle("Unauthorized");
+        problemDetail.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+        return problemDetail;
+    }
+
     @ExceptionHandler(InsufficientStockException.class)
     public ProblemDetail handleInsufficientStock(InsufficientStockException ex, WebRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(

@@ -1,8 +1,8 @@
 # OrderHub MVP — Project Status
 
 **Last updated**: 2026-02-08
-**Current phase**: Foundation (Wave 3)
-**Overall progress**: 5 / 16 features complete
+**Current phase**: Backend Domain Modules (Wave 4)
+**Overall progress**: 6 / 16 features complete
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Status      | Count | Features |
 | ----------- | ----- | -------- |
-| Not Started | 11    | 06–16    |
+| Not Started | 10    | 07–16    |
 | In Progress | 0     | —        |
-| Complete    | 5     | 01–05    |
+| Complete    | 6     | 01–06    |
 | Blocked     | 0     | —        |
 
 ```
-Progress: [██████░░░░░░░░░░░░░░] 31%
+Progress: [███████░░░░░░░░░░░░░] 38%
 ```
 
 ---
@@ -42,7 +42,7 @@ Progress: [██████░░░░░░░░░░░░░░] 31%
 | #   | Feature                                    | Status      | Dependencies | Notes                                              |
 | --- | ------------------------------------------ | ----------- | ------------ | -------------------------------------------------- |
 | 05  | [Common Module](plans/05-common-module.md) | ✅ Complete | 01, 04       | CORS, OpenAPI, exceptions, GlobalExceptionHandler  |
-| 06  | [Auth Backend](plans/06-auth-backend.md)   | Not Started | 05           | JWT, Spring Security, registration, login, refresh |
+| 06  | [Auth Backend](plans/06-auth-backend.md)   | ✅ Complete | 05           | JWT, Spring Security, registration, login, refresh |
 
 ### Wave 4 — Backend Domain Modules (sequential)
 
@@ -83,11 +83,12 @@ The longest sequential chain that determines minimum timeline:
 
 ## Change Log
 
-| Date       | Change                                                                                        |
-| ---------- | --------------------------------------------------------------------------------------------- |
-| 2026-02-08 | Feature 05 (Common Module) completed. CORS config, OpenAPI setup, exception handlers added.  |
-| 2026-02-08 | Feature 04 (Database Schema) completed. 7 Flyway migrations applied, seed data loaded.        |
-| 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments. |
-| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.   |
-| 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created.  |
-| 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                            |
+| Date       | Change                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-08 | Feature 06 (Auth Backend) completed. JWT auth, Spring Security, user registration/login, role-based access control. |
+| 2026-02-08 | Feature 05 (Common Module) completed. CORS config, OpenAPI setup, exception handlers added.                         |
+| 2026-02-08 | Feature 04 (Database Schema) completed. 7 Flyway migrations applied, seed data loaded.                              |
+| 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments.                       |
+| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.                         |
+| 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created.                        |
+| 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                                                  |
