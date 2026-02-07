@@ -1,6 +1,19 @@
-# Frontend
+# OrderHub Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+> 📖 For full project documentation including backend setup, see the [root README](../README.md)
+
+This is the Angular 17+ frontend for OrderHub, built with standalone components, TypeScript 5.x, and Angular Signals.
+
+## Quick Start
+
+```bash
+npm install
+npm run start  # or: ng serve
+```
+
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+**Note**: The backend API must be running at `http://localhost:8080` (configured in `proxy.conf.json`).
 
 ## Development server
 
