@@ -7,7 +7,19 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Refresh token entity for JWT token rotation
+ * JPA entity representing a refresh token for JWT token rotation.
+ * <p>
+ * Each refresh token is associated with a user and has an expiration time.
+ * Refresh tokens are single-use and are deleted after being used to obtain
+ * a new access token (token rotation).
+ * </p>
+ * <p>
+ * Mapped to the "refresh_tokens" database table.
+ * </p>
+ *
+ * @author OrderHub Team
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Entity
 @Table(name = "refresh_tokens")
@@ -82,6 +94,11 @@ public class RefreshToken {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Checks whether this refresh token has expired.
+     *
+     * @return true if the current time is after the expiration time, false otherwise
+     */
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expiresAt);
     }

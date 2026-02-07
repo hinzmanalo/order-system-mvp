@@ -1,7 +1,15 @@
 package com.orderhub.auth.dto;
 
 /**
- * Response DTO for JWT token
+ * Response DTO containing JWT tokens after successful authentication.
+ * <p>
+ * Includes both the access token (short-lived) and refresh token (long-lived)
+ * along with token type and expiration information.
+ * </p>
+ *
+ * @author OrderHub Team
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class TokenResponse {
 

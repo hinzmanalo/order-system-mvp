@@ -7,7 +7,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Response DTO for user information
+ * Response DTO for user information.
+ * <p>
+ * Used to transfer user data to clients without exposing sensitive
+ * information like password hashes. Includes a factory method for
+ * converting from the User entity.
+ * </p>
+ *
+ * @author OrderHub Team
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class UserResponse {
 

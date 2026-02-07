@@ -5,7 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * Request DTO for user registration
+ * Request DTO for user registration.
+ * <p>
+ * Contains the required information for creating a new user account.
+ * All fields are validated using Jakarta Bean Validation annotations.
+ * </p>
+ *
+ * @author OrderHub Team
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class RegisterRequest {
 

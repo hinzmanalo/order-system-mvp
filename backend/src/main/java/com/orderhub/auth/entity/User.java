@@ -8,7 +8,19 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * User entity for authentication and authorization
+ * JPA entity representing a user in the system.
+ * <p>
+ * Stores user authentication credentials and profile information.
+ * The email address serves as the unique identifier for login purposes.
+ * Passwords are stored as BCrypt hashes.
+ * </p>
+ * <p>
+ * Mapped to the "users" database table.
+ * </p>
+ *
+ * @author OrderHub Team
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Entity
 @Table(name = "users")

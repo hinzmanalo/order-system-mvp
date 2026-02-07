@@ -3,7 +3,15 @@ package com.orderhub.auth.dto;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * Request DTO for user login
+ * Request DTO for user login authentication.
+ * <p>
+ * Contains the credentials required for user authentication.
+ * Both email and password are required fields.
+ * </p>
+ *
+ * @author OrderHub Team
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class LoginRequest {
 
