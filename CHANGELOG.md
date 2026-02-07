@@ -9,12 +9,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Authentication Backend (Feature 06)**:
+  - JWT-based authentication with Spring Security
+  - User registration and login endpoints with BCrypt password hashing
+  - Token refresh mechanism with rotation (old tokens invalidated)
+  - Role-based access control (USER/ADMIN roles)
+  - JwtTokenProvider for JWT generation and validation using JJWT 0.12.5
+  - CustomUserDetailsService for Spring Security integration
+  - JwtAuthenticationFilter for Bearer token validation
+  - JwtAuthEntryPoint for RFC 7807 authentication error responses
+  - SecurityConfig with stateless session management and CSRF disabled
+  - AuthController: POST /api/v1/auth/register, /login, /refresh, and GET /me
+  - AdminUserController: GET /api/v1/admin/users (list), GET /{id}, PUT /{id}/role
+  - User, RefreshToken, and Role entities with JPA mappings
+  - UserRepository and RefreshTokenRepository with custom query methods
+  - AuthService with complete user management and token operations
+  - DTO classes: RegisterRequest, LoginRequest, RefreshRequest, TokenResponse, UserResponse, UpdateRoleRequest
+  - ConflictException and UnauthorizedException custom exceptions
+  - Global exception handlers for 401 and 409 status codes
+  - JWT configuration in application.yml (secret, expiry settings)
+  - Public endpoints: /api/v1/auth/**, /api/v1/products/**, /swagger-ui/\*\*, /actuator/health
+  - Protected endpoints: /api/v1/** requires authentication, /api/v1/admin/** requires ADMIN role
+
 - Common module infrastructure:
   - CORS configuration for Angular frontend (localhost:4200)
   - OpenAPI/Swagger configuration with API documentation structure
   - Custom exception classes (ResourceNotFound, DuplicateResource, InsufficientStock, InvalidOrderState, PaymentAmountMismatch)
   - Global exception handler with RFC 7807 Problem Detail responses
   - Standardized error handling for all backend modules
+
+### Changed
+
+- Auth module code quality improvements:
+  - Added comprehensive SLF4J logging to all auth module classes
+  - Implemented parameterized logging for better performance
+  - Added appropriate log levels (INFO for business events, WARN for failures, DEBUG for read operations)
+  - Enhanced JavaDoc documentation for all public classes and methods
+  - Added @param, @return, @throws, @author, @version, and @since tags
+  - Documented thread-safety considerations in service classes
+  - Added business logic explanations in implementation comments
 
 ## [1.0.0] - 2026-02-08
 
@@ -46,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### In Progress
 
-- Backend module development (auth, catalog, inventory, orders, payments)
+- Backend module development (catalog, inventory, orders, payments)
 - Frontend feature development (auth, catalog, cart, checkout, orders, admin)
 - API documentation with OpenAPI/Swagger
 - Unit and integration test suites
@@ -55,9 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Technical Infrastructure
 
-- **Backend**: Java 17, Spring Boot 3, Spring Data JPA, PostgreSQL 16
+- **Backend**: Java 17, Spring Boot 3, Spring Data JPA, Spring Security, PostgreSQL 16
 - **Frontend**: Angular 17+, TypeScript 5.x, Angular Signals, SCSS
 - **Database**: PostgreSQL 16 with Flyway migrations
+- **Authentication**: JWT (JJWT 0.12.5), BCrypt password hashing, token refresh rotation
 - **Containerization**: Docker Compose
 - **Build Tools**: Maven (backend), npm/Angular CLI (frontend)
 

@@ -142,6 +142,26 @@ Implement the authentication and authorization system: user registration, login 
 - [x] `GET /api/v1/admin/users` as USER → 403
 - [x] `PUT /api/v1/admin/users/{id}/role` promotes USER to ADMIN
 
+## Code Quality Enhancements
+
+- [x] **SLF4J Logging**:
+  - Added logger declarations to all service, controller, and security classes
+  - Implemented parameterized logging for performance (e.g., `logger.info("User {} logged in", userId)`)
+  - Used appropriate log levels:
+    - INFO: Business events (registration, login, role changes)
+    - WARN: Failed operations (invalid credentials, duplicate emails, unauthorized access)
+    - DEBUG: Read operations and routine processing
+  - Never log sensitive data (passwords, tokens)
+  - Added context (user IDs, email addresses) to all log messages
+
+- [x] **JavaDoc Documentation**:
+  - Added comprehensive class-level JavaDoc with `@author`, `@version`, `@since` tags
+  - Documented all public methods with `@param`, `@return`, `@throws` tags
+  - Included thread-safety notes where applicable
+  - Added business logic explanations in class descriptions
+  - Documented security considerations (e.g., password hashing, token rotation)
+  - Enhanced DTOs, entities, and repositories with descriptive documentation
+
 ## Files Created
 
 ```

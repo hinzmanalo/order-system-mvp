@@ -12,7 +12,8 @@ import java.util.UUID;
 /**
  * Spring Data JPA repository for RefreshToken entities.
  * <p>
- * Provides CRUD operations and custom query methods for refresh token management,
+ * Provides CRUD operations and custom query methods for refresh token
+ * management,
  * including token lookup, user-based deletion, and expired token cleanup.
  * </p>
  *
@@ -27,7 +28,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
      * Finds a refresh token by its token string value.
      *
      * @param token the refresh token string to search for
-     * @return an Optional containing the RefreshToken if found, or empty if not found
+     * @return an Optional containing the RefreshToken if found, or empty if not
+     *         found
      */
     Optional<RefreshToken> findByToken(String token);
 

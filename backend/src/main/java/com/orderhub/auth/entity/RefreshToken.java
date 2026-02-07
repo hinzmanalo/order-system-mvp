@@ -97,7 +97,8 @@ public class RefreshToken {
     /**
      * Checks whether this refresh token has expired.
      *
-     * @return true if the current time is after the expiration time, false otherwise
+     * @return true if the current time is after the expiration time, false
+     *         otherwise
      */
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expiresAt);

@@ -24,7 +24,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * with role-based access control.
  * </p>
  * <p>
- * Public endpoints: /api/v1/auth/**, /api/v1/products/**, Swagger UI, health checks.
+ * Public endpoints: /api/v1/auth/**, /api/v1/products/**, Swagger UI, health
+ * checks.
  * Admin endpoints: /api/v1/admin/** (requires ADMIN role).
  * All other /api/v1/** endpoints require authentication.
  * </p>
@@ -49,7 +50,8 @@ public class SecurityConfig {
      *
      * @param userDetailsService      the service for loading user details
      * @param jwtAuthenticationFilter the JWT authentication filter
-     * @param jwtAuthEntryPoint       the authentication entry point for handling auth errors
+     * @param jwtAuthEntryPoint       the authentication entry point for handling
+     *                                auth errors
      */
     public SecurityConfig(CustomUserDetailsService userDetailsService,
             JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -98,7 +100,8 @@ public class SecurityConfig {
     }
 
     /**
-     * Configures the DAO authentication provider with user details service and password encoder.
+     * Configures the DAO authentication provider with user details service and
+     * password encoder.
      *
      * @return the configured DaoAuthenticationProvider
      */

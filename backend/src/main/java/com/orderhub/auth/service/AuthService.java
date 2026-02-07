@@ -24,10 +24,14 @@ public interface AuthService {
     /**
      * Registers a new user in the system.
      *
-     * @param request the registration request containing user details, must not be null
+     * @param request the registration request containing user details, must not be
+     *                null
      * @return the created user information as a response DTO
-     * @throws com.orderhub.common.exception.ConflictException if a user with the same email already exists
-     * @throws IllegalArgumentException if request is null or contains invalid data
+     * @throws com.orderhub.common.exception.ConflictException if a user with the
+     *                                                         same email already
+     *                                                         exists
+     * @throws IllegalArgumentException                        if request is null or
+     *                                                         contains invalid data
      */
     UserResponse register(RegisterRequest request);
 
@@ -36,7 +40,8 @@ public interface AuthService {
      *
      * @param request the login credentials, must not be null
      * @return token response containing access and refresh tokens
-     * @throws com.orderhub.common.exception.UnauthorizedException if credentials are invalid
+     * @throws com.orderhub.common.exception.UnauthorizedException if credentials
+     *                                                             are invalid
      */
     TokenResponse login(LoginRequest request);
 
@@ -47,9 +52,12 @@ public interface AuthService {
      * and a new one is issued along with the new access token.
      * </p>
      *
-     * @param request the refresh request containing the refresh token, must not be null
+     * @param request the refresh request containing the refresh token, must not be
+     *                null
      * @return new token response with fresh access and refresh tokens
-     * @throws com.orderhub.common.exception.UnauthorizedException if refresh token is invalid or expired
+     * @throws com.orderhub.common.exception.UnauthorizedException if refresh token
+     *                                                             is invalid or
+     *                                                             expired
      */
     TokenResponse refresh(RefreshRequest request);
 
@@ -58,7 +66,8 @@ public interface AuthService {
      *
      * @param userId the unique identifier of the user, must not be null
      * @return the user information as a response DTO
-     * @throws com.orderhub.common.exception.ResourceNotFoundException if user is not found
+     * @throws com.orderhub.common.exception.ResourceNotFoundException if user is
+     *                                                                 not found
      */
     UserResponse getCurrentUser(UUID userId);
 
@@ -75,18 +84,24 @@ public interface AuthService {
      *
      * @param userId the unique identifier of the user, must not be null
      * @return the user information as a response DTO
-     * @throws com.orderhub.common.exception.ResourceNotFoundException if user is not found
+     * @throws com.orderhub.common.exception.ResourceNotFoundException if user is
+     *                                                                 not found
      */
     UserResponse getUserById(UUID userId);
 
     /**
      * Updates a user's role (admin only).
      *
-     * @param userId the unique identifier of the user to update, must not be null
-     * @param request the role update request containing the new role, must not be null
+     * @param userId  the unique identifier of the user to update, must not be null
+     * @param request the role update request containing the new role, must not be
+     *                null
      * @return the updated user information as a response DTO
-     * @throws com.orderhub.common.exception.ResourceNotFoundException if user is not found
-     * @throws IllegalArgumentException if the specified role is invalid
+     * @throws com.orderhub.common.exception.ResourceNotFoundException if user is
+     *                                                                 not found
+     * @throws IllegalArgumentException                                if the
+     *                                                                 specified
+     *                                                                 role is
+     *                                                                 invalid
      */
     UserResponse updateUserRole(UUID userId, UpdateRoleRequest request);
 }

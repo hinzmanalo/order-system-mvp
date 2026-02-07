@@ -36,7 +36,8 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     /**
      * Handles authentication failures by returning a 401 Unauthorized response.
      *
-     * @param request       the HTTP request that resulted in an AuthenticationException
+     * @param request       the HTTP request that resulted in an
+     *                      AuthenticationException
      * @param response      the HTTP response to send
      * @param authException the exception that was thrown during authentication
      * @throws IOException      if an I/O error occurs during response writing

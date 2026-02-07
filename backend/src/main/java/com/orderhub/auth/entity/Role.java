@@ -6,8 +6,8 @@ package com.orderhub.auth.entity;
  * Defines the available roles in the system:
  * </p>
  * <ul>
- *   <li>{@link #USER} - Regular user with standard permissions</li>
- *   <li>{@link #ADMIN} - Administrator with full system access</li>
+ * <li>{@link #USER} - Regular user with standard permissions</li>
+ * <li>{@link #ADMIN} - Administrator with full system access</li>
  * </ul>
  *
  * @author OrderHub Team

@@ -45,8 +45,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Constructs a JwtAuthenticationFilter with required dependencies.
      *
-     * @param tokenProvider      the JWT token provider for token validation and parsing
-     * @param userDetailsService the user details service for loading user information
+     * @param tokenProvider      the JWT token provider for token validation and
+     *                           parsing
+     * @param userDetailsService the user details service for loading user
+     *                           information
      */
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, CustomUserDetailsService userDetailsService) {
         this.tokenProvider = tokenProvider;

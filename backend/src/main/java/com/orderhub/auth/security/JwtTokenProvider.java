@@ -42,8 +42,10 @@ public class JwtTokenProvider {
     /**
      * Constructs a JwtTokenProvider with the specified configuration.
      *
-     * @param secret                the secret key for signing JWT tokens, must be at least 256 bits
-     * @param accessTokenValidityMs the access token validity duration in milliseconds (default: 15 minutes)
+     * @param secret                the secret key for signing JWT tokens, must be
+     *                              at least 256 bits
+     * @param accessTokenValidityMs the access token validity duration in
+     *                              milliseconds (default: 15 minutes)
      */
     public JwtTokenProvider(
             @Value("${app.jwt.secret}") String secret,

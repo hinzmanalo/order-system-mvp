@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 
 /**
- * Custom UserDetailsService implementation for loading user information by email.
+ * Custom UserDetailsService implementation for loading user information by
+ * email.
  * <p>
  * This service integrates with Spring Security to provide user authentication
  * details. Users are loaded from the database by their email address.
@@ -43,7 +44,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     /**
      * Loads a user by their email address for Spring Security authentication.
      * <p>
-     * The user's role is prefixed with "ROLE_" to match Spring Security conventions.
+     * The user's role is prefixed with "ROLE_" to match Spring Security
+     * conventions.
      * </p>
      *
      * @param email the email address identifying the user
