@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-02-07
 **Current phase**: Foundation (Wave 1)
-**Overall progress**: 1 / 16 features complete
+**Overall progress**: 2 / 16 features complete
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Status      | Count | Features |
 | ----------- | ----- | -------- |
-| Not Started | 15    | 02–16    |
+| Not Started | 14    | 03–16    |
 | In Progress | 0     | —        |
-| Complete    | 1     | 01       |
+| Complete    | 2     | 01, 02   |
 | Blocked     | 0     | —        |
 
 ```
-Progress: [█░░░░░░░░░░░░░░░░░░░] 6%
+Progress: [██░░░░░░░░░░░░░░░░░░] 12%
 ```
 
 ---
@@ -28,7 +28,7 @@ Progress: [█░░░░░░░░░░░░░░░░░░░] 6%
 | #   | Feature                                                    | Status      | Dependencies | Notes                                   |
 | --- | ---------------------------------------------------------- | ----------- | ------------ | --------------------------------------- |
 | 01  | [Backend Scaffolding](plans/01-backend-scaffolding.md)     | ✅ Complete | None         | pom.xml, application config, main class |
-| 02  | [Docker Infrastructure](plans/02-docker-infrastructure.md) | Not Started | None         | docker-compose.yml, Dockerfile          |
+| 02  | [Docker Infrastructure](plans/02-docker-infrastructure.md) | ✅ Complete | None         | docker-compose.yml, Dockerfile          |
 | 03  | [Angular Scaffolding](plans/03-angular-scaffolding.md)     | Not Started | None         | ng new, proxy config, environments      |
 
 ### Wave 2 — Database
@@ -85,5 +85,6 @@ The longest sequential chain that determines minimum timeline:
 
 | Date       | Change                                                                                       |
 | ---------- | -------------------------------------------------------------------------------------------- |
+| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.  |
 | 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created. |
 | 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                           |

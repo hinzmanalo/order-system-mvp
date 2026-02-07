@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial project scaffolding for backend (Java 17, Spring Boot 3)
-- Initial project scaffolding for frontend (Angular 17+)
-- Docker Compose infrastructure setup
-- PostgreSQL 16 database configuration
-- Flyway migration support
+- Docker Compose infrastructure with PostgreSQL 16 database
+- Multi-stage Dockerfile for Spring Boot application
+- Docker health checks for database readiness
+- Persistent volume configuration for PostgreSQL data
+- .dockerignore file for optimized builds
 - Maven build configuration
+- Flyway migration support
 - Project documentation structure (PRD, implementation plans, MVP spec)
 
 ### In Progress
