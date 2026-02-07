@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:default-dev-secret-key-that-is-at-least-256-bits-long}
+    access-token-expiry: 900000       # 15 minutes in milliseconds
+    refresh-token-expiry: 604800000   # 7 days in milliseconds
