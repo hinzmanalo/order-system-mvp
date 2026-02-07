@@ -1,22 +1,22 @@
 # OrderHub MVP — Project Status
 
-**Last updated**: 2026-02-07
-**Current phase**: Foundation (Wave 1)
-**Overall progress**: 3 / 16 features complete
+**Last updated**: 2026-02-08
+**Current phase**: Foundation (Wave 2)
+**Overall progress**: 4 / 16 features complete
 
 ---
 
 ## Progress Summary
 
-| Status      | Count | Features   |
-| ----------- | ----- | ---------- |
-| Not Started | 13    | 04–16      |
-| In Progress | 0     | —          |
-| Complete    | 3     | 01, 02, 03 |
-| Blocked     | 0     | —          |
+| Status      | Count | Features |
+| ----------- | ----- | -------- |
+| Not Started | 12    | 05–16    |
+| In Progress | 0     | —        |
+| Complete    | 4     | 01–04    |
+| Blocked     | 0     | —        |
 
 ```
-Progress: [███░░░░░░░░░░░░░░░░░] 18%
+Progress: [█████░░░░░░░░░░░░░░░] 25%
 ```
 
 ---
@@ -35,7 +35,7 @@ Progress: [███░░░░░░░░░░░░░░░░░] 18%
 
 | #   | Feature                                        | Status      | Dependencies | Notes                           |
 | --- | ---------------------------------------------- | ----------- | ------------ | ------------------------------- |
-| 04  | [Database Schema](plans/04-database-schema.md) | Not Started | 01, 02       | 7 Flyway migrations + seed data |
+| 04  | [Database Schema](plans/04-database-schema.md) | ✅ Complete | 01, 02       | 7 Flyway migrations + seed data |
 
 ### Wave 3 — Common + Auth
 
@@ -85,6 +85,7 @@ The longest sequential chain that determines minimum timeline:
 
 | Date       | Change                                                                                        |
 | ---------- | --------------------------------------------------------------------------------------------- |
+| 2026-02-08 | Feature 04 (Database Schema) completed. 7 Flyway migrations applied, seed data loaded.        |
 | 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments. |
 | 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.   |
 | 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created.  |
