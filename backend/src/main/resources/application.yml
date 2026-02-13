@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active: dev
   jpa:
     hibernate:
       ddl-auto: validate
@@ -20,6 +22,6 @@ management:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:default-dev-secret-key-that-is-at-least-256-bits-long}
-    access-token-expiry: 900000       # 15 minutes in milliseconds
-    refresh-token-expiry: 604800000   # 7 days in milliseconds
+    secret: ${JWT_SECRET:default-dev-secret-key-that-is-at-least-256-bits-long-for-hs256}
+    access-token-validity-ms: 900000       # 15 minutes in milliseconds
+    refresh-token-validity-hours: 168      # 7 days in hours

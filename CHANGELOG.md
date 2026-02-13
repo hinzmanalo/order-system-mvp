@@ -5,7 +5,101 @@ All notable changes to the OrderHub MVP project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0]
+## [Unreleased]
+
+### Added
+
+- **Backend Architecture Documentation**:
+  - Comprehensive ARCHITECTURE.md covering system design and technical architecture
+  - Module structure and dependency graph visualization
+  - Domain model with entity relationship diagrams
+  - Data flow and sequence diagrams for order creation and authentication
+  - API design patterns and RESTful conventions
+  - Security architecture with JWT flow and RBAC details
+  - Database design with schema, indexing strategy, and migration approach
+  - Concurrency control and transaction management patterns
+  - Error handling with RFC 7807 Problem Detail responses
+  - Configuration management and environment variables
+  - Testing strategy with test pyramid
+  - Deployment architecture with Docker Compose
+  - Quick reference guides for module imports and design decisions
+  - Performance considerations and optimization strategies
+
+- **Payments Backend (Feature 10)** ✅ COMPLETE:
+  - Payment entity with idempotency key, status (SUCCESS/FAILED), and gateway reference
+  - PaymentRepository with idempotency key lookup and order-based queries
+  - Strategy pattern for payment gateway abstraction (PaymentGateway interface)
+  - MockPaymentGateway with 90% success rate for development/testing
+  - Payment processing with idempotency guarantees via unique constraint
+  - Atomic order status transition to PAID on successful payment
+  - BigDecimal amount validation using compareTo() for exact order total matching
+  - Customer endpoints: POST /api/v1/orders/{orderId}/payments (process payment with Idempotency-Key header), GET /api/v1/orders/{orderId}/payments (payment history)
+  - PaymentService with comprehensive idempotency checks and gateway integration
+  - DTOs: PaymentRequest (with Jakarta validation), PaymentResponse
+  - Gateway responses: PaymentGatewayResult record with success/gatewayReference
+  - Failed payments keep order in CONFIRMED status for retry with new idempotency key
+  - Comprehensive SLF4J logging at all critical payment processing steps
+  - OpenAPI documentation for all payment endpoints
+  - User stories satisfied: US-013 (Pay for order), US-025 (Payment idempotency)
+
+- **Catalog Backend (Feature 07)** ✅ COMPLETE:
+  - Product entity with UUID primary key, optimistic locking (@Version), and SKU uniqueness
+  - ProductRepository with custom @Query for filtered active product searches
+  - Product CRUD operations with SKU validation and soft deletion via active flag
+  - Public endpoints: GET /api/v1/products (browse with pagination/filtering), GET /api/v1/products/{id} (detail)
+  - Admin endpoints: POST /api/v1/admin/products (create), PUT /api/v1/admin/products/{id} (update), PATCH /api/v1/admin/products/{id}/status (activate/deactivate)
+  - ProductService with Interface + Impl pattern and comprehensive SLF4J logging
+  - DTOs: ProductRequest (with Jakarta validation), ProductResponse, ProductStatusRequest
+  - Case-insensitive name filtering and price range filtering support
+  - OpenAPI documentation for all catalog endpoints
+  - Deactivated products excluded from public product listings
+  - User stories satisfied: US-005 (Browse products), US-006 (View product detail), US-014 (Admin create product), US-015 (Admin update product), US-016 (Admin activate/deactivate product)
+
+- **Authentication Backend (Feature 06)**:
+  - JWT-based authentication with Spring Security
+  - User registration and login endpoints with BCrypt password hashing
+  - Token refresh mechanism with rotation (old tokens invalidated)
+  - Role-based access control (USER/ADMIN roles)
+  - JwtTokenProvider for JWT generation and validation using JJWT 0.12.5
+  - CustomUserDetailsService for Spring Security integration
+  - JwtAuthenticationFilter for Bearer token validation
+  - JwtAuthEntryPoint for RFC 7807 authentication error responses
+  - SecurityConfig with stateless session management and CSRF disabled
+  - AuthController: POST /api/v1/auth/register, /login, /refresh, and GET /me
+  - AdminUserController: GET /api/v1/admin/users (list), GET /{id}, PUT /{id}/role
+  - User, RefreshToken, and Role entities with JPA mappings
+  - UserRepository and RefreshTokenRepository with custom query methods
+  - AuthService with complete user management and token operations
+  - DTO classes: RegisterRequest, LoginRequest, RefreshRequest, TokenResponse, UserResponse, UpdateRoleRequest
+  - ConflictException and UnauthorizedException custom exceptions
+  - Global exception handlers for 401 and 409 status codes
+  - JWT configuration in application.yml (secret, expiry settings)
+  - Public endpoints: /api/v1/auth/**, /api/v1/products/**, /swagger-ui/\*\*, /actuator/health
+  - Protected endpoints: /api/v1/** requires authentication, /api/v1/admin/** requires ADMIN role
+
+- Common module infrastructure:
+  - CORS configuration for Angular frontend (localhost:4200)
+  - OpenAPI/Swagger configuration with API documentation structure
+  - Custom exception classes (ResourceNotFound, DuplicateResource, InsufficientStock, InvalidOrderState, PaymentAmountMismatch)
+  - Global exception handler with RFC 7807 Problem Detail responses
+  - Standardized error handling for all backend modules
+
+### Fixed
+
+- **ProductRepository JPQL type casting issue**: Added explicit `CAST(:name AS string)` in the `findActiveProducts` query to prevent PostgreSQL `function lower(bytea) does not exist` error when nullable parameters are used in CONCAT operations
+
+### Changed
+
+- Auth module code quality improvements:
+  - Added comprehensive SLF4J logging to all auth module classes
+  - Implemented parameterized logging for better performance
+  - Added appropriate log levels (INFO for business events, WARN for failures, DEBUG for read operations)
+  - Enhanced JavaDoc documentation for all public classes and methods
+  - Added @param, @return, @throws, @author, @version, and @since tags
+  - Documented thread-safety considerations in service classes
+  - Added business logic explanations in implementation comments
+
+## [1.0.0] - 2026-02-08
 
 ### Added
 
@@ -35,31 +129,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### In Progress
 
-- Backend module development (common, auth, catalog, inventory, orders, payments)
+- Backend module development (catalog, inventory, orders, payments)
 - Frontend feature development (auth, catalog, cart, checkout, orders, admin)
 - API documentation with OpenAPI/Swagger
 - Unit and integration test suites
 
-## [0.1.0] - TBD
+---
 
-### Planned Features
+## Technical Infrastructure
 
-- User authentication and authorization (JWT-based)
-- Product catalog management
-- Shopping cart functionality
-- Order processing with atomic inventory updates
-- Payment processing with idempotency support
-- Admin dashboard for inventory and order management
-- Optimistic locking for inventory and products
-- RESTful API endpoints (base path: `/api/v1/`)
-- Responsive Angular UI with standalone components
-- Signal-based state management
-
-### Technical Infrastructure
-
-- **Backend**: Java 17, Spring Boot 3, Spring Data JPA, PostgreSQL 16
+- **Backend**: Java 17, Spring Boot 3, Spring Data JPA, Spring Security, PostgreSQL 16
 - **Frontend**: Angular 17+, TypeScript 5.x, Angular Signals, SCSS
 - **Database**: PostgreSQL 16 with Flyway migrations
+- **Authentication**: JWT (JJWT 0.12.5), BCrypt password hashing, token refresh rotation
 - **Containerization**: Docker Compose
 - **Build Tools**: Maven (backend), npm/Angular CLI (frontend)
 

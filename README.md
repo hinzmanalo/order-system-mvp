@@ -6,9 +6,10 @@ A portfolio-grade monolithic ordering system demonstrating enterprise-level full
 
 OrderHub is a modular monolith e-commerce platform showcasing real-world backend engineering skills including:
 
+- **JWT-based authentication** with Spring Security and token refresh rotation
+- **Role-based access control** (USER/ADMIN) with method-level security
 - Transactional integrity with atomic inventory management
 - Optimistic locking for concurrent updates
-- JWT-based authentication and authorization
 - Payment processing with idempotency guarantees
 - Clean domain separation with modular architecture
 - RESTful API design with OpenAPI documentation
@@ -70,7 +71,36 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 Backend API will be available at `http://localhost:8080`.
 
-**API Documentation**: `http://localhost:8080/swagger-ui.html` (when implemented)
+**API Documentation**: `http://localhost:8080/swagger-ui.html`
+
+**Authentication Endpoints**:
+
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/login` - User login (returns JWT tokens)
+- `POST /api/v1/auth/refresh` - Refresh access token
+- `GET /api/v1/auth/me` - Get current user profile
+
+**Product Catalog Endpoints** (`/api/v1/products`):
+
+- `GET /` - Browse active products (paginated, filterable by name/price)
+- `GET /{id}` - Get product details
+
+**Admin - User Management** (`/api/v1/admin/users`) (requires ADMIN role):
+
+- `GET /` - List all users (paginated)
+- `GET /{id}` - Get user by ID
+- `PUT /{id}/role` - Update user role
+
+**Admin - Product Management** (`/api/v1/admin/products`) (requires ADMIN role):
+
+- `POST /` - Create new product
+- `PUT /{id}` - Update product
+- `PATCH /{id}/status` - Activate/deactivate product
+
+**Payment Processing** (`/api/v1/orders/{orderId}/payments`):
+
+- `POST /` - Process payment (requires Idempotency-Key header)
+- `GET /` - Get payment history for order
 
 #### 3. Run Frontend (Angular)
 
@@ -104,6 +134,12 @@ order-system-mvp/
 │   │   │   ├── config/              # CORS, OpenAPI configuration
 │   │   │   └── exception/           # Custom exceptions, global handler
 │   │   ├── auth/                    # Authentication module
+│   │   │   ├── controller/          # AuthController, AdminUserController
+│   │   │   ├── dto/                 # Request/Response DTOs
+│   │   │   ├── entity/              # User, RefreshToken, Role enum
+│   │   │   ├── repository/          # UserRepository, RefreshTokenRepository
+│   │   │   ├── service/             # AuthService interface + implementation
+│   │   │   └── security/            # Spring Security config, JWT provider
 │   │   ├── catalog/                 # Product catalog module
 │   │   ├── inventory/               # Inventory management module
 │   │   ├── orders/                  # Order processing module
@@ -226,36 +262,45 @@ ng help
 
 **Note**: The backend API must be running at `http://localhost:8080` for API calls to work (configured in `proxy.conf.json`).
 
-## API Endpoints (Planned)
+## API Endpoints
 
-### Authentication (`/api/v1/auth`)
+### Authentication (`/api/v1/auth`) ✅ Implemented
 
 - `POST /register` - User registration
 - `POST /login` - Login (returns access + refresh tokens)
 - `POST /refresh` - Refresh access token
 - `GET /me` - Get current user profile
 
-### Products (`/api/v1/products`)
+### Admin - Users (`/api/v1/admin/users`) ✅ Implemented
 
-- `GET /` - List products (pagination, filtering)
+- `GET /` - List all users (paginated, ADMIN only)
+- `GET /{id}` - Get user by ID (ADMIN only)
+- `PUT /{id}/role` - Update user role (ADMIN only)
+
+### Products (`/api/v1/products`) ✅ Implemented
+
+- `GET /` - List active products (pagination, name/price filtering)
 - `GET /{id}` - Get product details
+
+### Admin - Products (`/api/v1/admin/products`) ✅ Implemented
+
 - `POST /` - Create product (ADMIN only)
 - `PUT /{id}` - Update product (ADMIN only)
-- `DELETE /{id}` - Deactivate product (ADMIN only)
+- `PATCH /{id}/status` - Activate/deactivate product (ADMIN only)
 
-### Inventory (`/api/v1/inventory`)
+### Inventory (`/api/v1/inventory`) - Planned
 
 - `GET /product/{productId}` - Get stock level
 - `PATCH /{id}` - Adjust stock (ADMIN only)
 
-### Orders (`/api/v1/orders`)
+### Orders (`/api/v1/orders`) - Planned
 
 - `POST /` - Create order (atomic with inventory decrement)
 - `GET /` - List user's orders
 - `GET /{id}` - Get order details
 - `PUT /{id}/cancel` - Cancel order (restores inventory)
 
-### Payments (`/api/v1/payments`)
+### Payments (`/api/v1/payments`) - Planned
 
 - `POST /` - Process payment (requires Idempotency-Key header)
 - `GET /order/{orderId}` - Get payment status
@@ -350,15 +395,25 @@ Inter-module communication uses direct service injection (same JVM), not REST ca
 
 ## Documentation
 
+### Project Documentation
+
 - **PRD**: [docs/prd.md](docs/prd.md) - Product Requirements Document
 - **MVP Spec**: [docs/OrderHub_MVP.md](docs/OrderHub_MVP.md) - MVP feature scope
 - **Implementation Plans**: [docs/plans/](docs/plans/) - 16 feature-by-feature plans
-- **Project Status**: [docs/project_status.md](docs/project_status.md) - Current progress (4/16 complete)
+- **Project Status**: [docs/project_status.md](docs/project_status.md) - Current progress
 - **Changelog**: [CHANGELOG.md](CHANGELOG.md) - Version history
+
+### Backend Documentation
+
+- **Architecture & System Design**: [backend/docs/ARCHITECTURE.md](backend/docs/ARCHITECTURE.md) - Comprehensive technical architecture
+- **API Quick Reference**: [backend/docs/API_QUICK_REFERENCE.md](backend/docs/API_QUICK_REFERENCE.md) - Endpoint reference guide
+- **Developer Guide**: [backend/docs/DEVELOPER_GUIDE.md](backend/docs/DEVELOPER_GUIDE.md) - Development workflow
+- **Deployment Guide**: [backend/docs/DEPLOYMENT_GUIDE.md](backend/docs/DEPLOYMENT_GUIDE.md) - Deployment instructions
+- **Troubleshooting**: [backend/docs/TROUBLESHOOTING.md](backend/docs/TROUBLESHOOTING.md) - Common issues and solutions
 
 ## Current Status
 
-**Progress**: 4 / 16 features complete (25%)
+**Progress**: 7 / 16 features complete (44%)
 
 ### ✅ Completed
 
@@ -366,8 +421,14 @@ Inter-module communication uses direct service injection (same JVM), not REST ca
 - Feature 02: Docker Infrastructure (PostgreSQL, Docker Compose)
 - Feature 03: Angular Scaffolding (Angular 17.3, proxy config)
 - Feature 04: Database Schema (7 Flyway migrations + seed data)
+- Feature 05: Common Module (CORS, OpenAPI, exception handlers)
+- Feature 06: Auth Backend (JWT, Spring Security, user registration/login)
+- Feature 07: Catalog Backend (Product CRUD, pagination, filtering)
 
 ### 🚧 Next Up
+
+- Feature 08: Inventory Backend (Stock management, optimistic locking)
+- Feature 09: Orders Backend (Atomic order creation, lifecycle)
 
 - Feature 05: Common Module (CORS, OpenAPI, exception handling)
 - Feature 06: Auth Backend (JWT, Spring Security, registration/login)

@@ -149,14 +149,14 @@ Shortening this chain is the key to faster delivery. The backend domain features
 ## Completion Tracker
 
 - [x] 01 — Backend Scaffolding
-- [ ] 02 — Docker Infrastructure
-- [ ] 03 — Angular Scaffolding
-- [ ] 04 — Database Schema
-- [ ] 05 — Common Module
-- [ ] 06 — Auth Backend
-- [ ] 07 — Catalog Backend
-- [ ] 08 — Inventory Backend
-- [ ] 09 — Orders Backend
+- [x] 02 — Docker Infrastructure
+- [x] 03 — Angular Scaffolding
+- [x] 04 — Database Schema
+- [x] 05 — Common Module
+- [x] 06 — Auth Backend
+- [x] 07 — Catalog Backend
+- [x] 08 — Inventory Backend
+- [x] 09 — Orders Backend
 - [ ] 10 — Payments Backend
 - [ ] 11 — Backend Testing
 - [ ] 12 — Frontend Core
