@@ -1,0 +1,156 @@
+.cart-page {
+  padding: 2rem 0;
+
+  h1 {
+    margin-bottom: 2rem;
+    color: #333;
+  }
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+
+  .empty-message {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.cart-content {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  align-items: start;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cart-items {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #dee2e6;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: #f8f9fa;
+      }
+    }
+
+    td {
+      padding: 1rem;
+      vertical-align: middle;
+    }
+  }
+
+  .product-name {
+    font-weight: 500;
+    color: #333;
+  }
+
+  .price,
+  .subtotal {
+    font-weight: 600;
+    color: #28a745;
+  }
+
+  .quantity-input {
+    width: 80px;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+}
+
+.cart-summary {
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #dee2e6;
+
+    &.total {
+      border-bottom: none;
+      padding-top: 1rem;
+      margin-top: 1rem;
+      border-top: 2px solid #dee2e6;
+      font-size: 1.25rem;
+      font-weight: 700;
+
+      .value {
+        color: #28a745;
+      }
+    }
+
+    .value {
+      font-weight: 600;
+    }
+  }
+
+  .summary-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .btn {
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+  }
+}

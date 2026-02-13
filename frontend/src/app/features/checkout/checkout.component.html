@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="checkout-page">
+    <h1>Checkout</h1>
+
+    @if (error()) {
+      <div class="alert alert-error">
+        <strong>Error:</strong> {{ error() }}
+      </div>
+    }
+
+    <div class="checkout-content">
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        
+        <div class="items-list">
+          @for (item of cartItems; track item.product.id) {
+            <div class="summary-item">
+              <div class="item-info">
+                <div class="product-name">{{ item.product.name }}</div>
+                <div class="item-details">
+                  <span class="quantity">Qty: {{ item.quantity }}</span>
+                  <span class="unit-price">&#64; ${{ item.product.price.toFixed(2) }}</span>
+                </div>
+              </div>
+              <div class="item-subtotal">
+                ${{ getItemSubtotal(item.product.price, item.quantity).toFixed(2) }}
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="summary-total">
+          <span>Order Total:</span>
+          <span class="total-amount">${{ cartTotal.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <!-- Checkout Actions -->
+      <div class="checkout-actions">
+        <button
+          (click)="placeOrder()"
+          [disabled]="loading()"
+          class="btn btn-primary btn-lg"
+        >
+          @if (loading()) {
+            <span class="spinner"></span>
+            Processing...
+          } @else {
+            Place Order
+          }
+        </button>
+        
+        <a routerLink="/cart" class="btn btn-secondary btn-lg">
+          Back to Cart
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

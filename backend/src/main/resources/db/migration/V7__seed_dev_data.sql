@@ -4,8 +4,8 @@
 -- user@orderhub.com / user123
 INSERT INTO users (id, email, password_hash, first_name, last_name, role, created_at, updated_at)
 VALUES 
-    ('550e8400-e29b-41d4-a716-446655440001', 'admin@orderhub.com', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'Admin', 'User', 'ADMIN', NOW(), NOW()),
-    ('550e8400-e29b-41d4-a716-446655440002', 'user@orderhub.com', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'Test', 'User', 'USER', NOW(), NOW());
+    ('550e8400-e29b-41d4-a716-446655440001', 'admin@orderhub.com', '$2a$10$kkc.LUglW6j1JbWoeFb/iuQqfHdjo2gaWop/F/icIWwXjMCR3M2D.', 'Admin', 'User', 'ADMIN', NOW(), NOW()),
+    ('550e8400-e29b-41d4-a716-446655440002', 'user@orderhub.com', '$2a$10$rgQSO3uUPDudmpdkoqh4dOpJgdFofRmiqoRf8Y3PODJBiRKiy5lzS', 'Test', 'User', 'USER', NOW(), NOW());
 
 -- Seed Products
 INSERT INTO products (id, name, description, price, sku, active, version, created_at, updated_at)
