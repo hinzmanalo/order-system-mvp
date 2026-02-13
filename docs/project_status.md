@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-02-13
 **Current phase**: Backend Domain Modules (Wave 4)
-**Overall progress**: 9 / 16 features complete
+**Overall progress**: 10 / 16 features complete
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Status      | Count | Features |
 | ----------- | ----- | -------- |
-| Not Started | 7     | 10–16    |
+| Not Started | 6     | 11–16    |
 | In Progress | 0     | —        |
-| Complete    | 9     | 01–09    |
+| Complete    | 10    | 01–10    |
 | Blocked     | 0     | —        |
 
 ```
-Progress: [███████████░░░░░░░░] 56%
+Progress: [████████████░░░░░░] 62%
 ```
 
 ---
@@ -51,7 +51,7 @@ Progress: [███████████░░░░░░░░] 56%
 | 07  | [Catalog Backend](plans/07-catalog-backend.md)     | ✅ Complete | 05, 06       | Product CRUD, pagination, filtering                     |
 | 08  | [Inventory Backend](plans/08-inventory-backend.md) | ✅ Complete | 05, 07       | Stock management, optimistic locking, decrement/restore |
 | 09  | [Orders Backend](plans/09-orders-backend.md)       | ✅ Complete | 06, 07, 08   | Atomic order creation, cancellation, lifecycle          |
-| 10  | [Payments Backend](plans/10-payments-backend.md)   | Not Started | 09           | Payment gateway, idempotency, Strategy pattern          |
+| 10  | [Payments Backend](plans/10-payments-backend.md)   | ✅ Complete | 09           | Payment gateway, idempotency, Strategy pattern          |
 
 ### Wave 5 — Frontend + Backend Testing (parallel tracks)
 
@@ -85,6 +85,7 @@ The longest sequential chain that determines minimum timeline:
 
 | Date       | Change                                                                                                                                              |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-13 | Feature 10 (Payments Backend) completed. Payment processing with idempotency, Strategy pattern gateway, MockPaymentGateway (90% success rate).      |
 | 2026-02-13 | Backend Architecture Documentation created. Comprehensive ARCHITECTURE.md covering system design, module structure, data flow, security, DB design. |
 | 2026-02-13 | Feature 09 (Orders Backend) completed. Order/OrderItem entities, atomic order creation with inventory decrement, cancellation with restore.         |
 | 2026-02-13 | Feature 08 (Inventory Backend) completed. Inventory entity with optimistic locking, admin stock management, internal decrement/restore methods.     |

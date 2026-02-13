@@ -16,6 +16,7 @@ A production-ready Spring Boot application providing REST APIs for order managem
 - **Product Catalog** - Browse and manage products with filtering and pagination
 - **Order Management** - Create and track customer orders with atomic inventory updates
 - **Inventory Control** - Real-time stock management with optimistic locking
+- **Payment Processing** - Idempotent payment transactions with gateway abstraction (Strategy pattern)
 - **API Documentation** - Interactive Swagger UI for testing endpoints
 - **Database Migrations** - Version-controlled schema with Flyway
 - **Health Monitoring** - Spring Actuator endpoints for system health
@@ -68,6 +69,7 @@ com.orderhub/
 ├── catalog/          # Product catalog management
 ├── inventory/        # Stock level management
 ├── orders/           # Order processing and tracking
+├── payments/         # Payment processing with idempotency
 └── OrderHubApplication.java
 ```
 
@@ -77,8 +79,10 @@ com.orderhub/
 - **Interface + Impl Pattern** - Service layer uses interface/implementation
 - **DTO Pattern** - Separate request/response objects, entities never exposed
 - **Repository Pattern** - Spring Data JPA repositories for data access
+- **Strategy Pattern** - Payment gateway abstraction for provider swapping
 - **Optimistic Locking** - `@Version` on Inventory and Product entities
 - **Atomic Transactions** - Order creation with inventory decrements in single transaction
+- **Idempotency** - Payment processing with unique key constraint
 
 ### Database Schema
 
@@ -317,6 +321,89 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
   "status": "CANCELLED",
   "message": "Order cancelled successfully. Inventory has been restored."
 }
+```
+
+### Payments
+
+#### Process Payment
+
+```bash
+POST /api/v1/orders/{orderId}/payments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+Idempotency-Key: unique-payment-key-123
+Content-Type: application/json
+
+{
+  "amount": 149.98
+}
+```
+
+**Headers:**
+
+- `Authorization` - JWT access token (required)
+- `Idempotency-Key` - Unique key to prevent duplicate processing (required)
+
+**Request Body:**
+
+| Field    | Type       | Required | Description                             |
+| -------- | ---------- | -------- | --------------------------------------- |
+| `amount` | BigDecimal | Yes      | Payment amount (must match order total) |
+
+**Response:**
+
+```json
+{
+  "id": "payment-uuid",
+  "orderId": "order-uuid",
+  "amount": 149.98,
+  "status": "SUCCESS",
+  "gatewayReference": "MOCK-REF-abc123",
+  "createdAt": "2026-02-13T10:30:00"
+}
+```
+
+**Status Codes:**
+
+- `200 OK` - Payment processed (check `status` field for SUCCESS/FAILED)
+- `400 Bad Request` - Missing Idempotency-Key header or invalid request
+- `404 Not Found` - Order not found
+- `409 Conflict` - Order not in CONFIRMED status
+- `422 Unprocessable Entity` - Payment amount doesn't match order total
+
+**Notes:**
+
+- Same `Idempotency-Key` returns cached result without reprocessing
+- Failed payments keep order in CONFIRMED status for retry
+- Successful payment transitions order to PAID status
+
+#### Get Payment History
+
+```bash
+GET /api/v1/orders/{orderId}/payments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+```
+
+**Response:**
+
+```json
+[
+  {
+    "id": "payment-1",
+    "orderId": "order-uuid",
+    "amount": 149.98,
+    "status": "FAILED",
+    "gatewayReference": null,
+    "createdAt": "2026-02-13T10:25:00"
+  },
+  {
+    "id": "payment-2",
+    "orderId": "order-uuid",
+    "amount": 149.98,
+    "status": "SUCCESS",
+    "gatewayReference": "MOCK-REF-xyz789",
+    "createdAt": "2026-02-13T10:30:00"
+  }
+]
 ```
 
 ### Admin Endpoints

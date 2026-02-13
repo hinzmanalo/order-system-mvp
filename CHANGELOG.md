@@ -25,6 +25,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Quick reference guides for module imports and design decisions
   - Performance considerations and optimization strategies
 
+- **Payments Backend (Feature 10)** ✅ COMPLETE:
+  - Payment entity with idempotency key, status (SUCCESS/FAILED), and gateway reference
+  - PaymentRepository with idempotency key lookup and order-based queries
+  - Strategy pattern for payment gateway abstraction (PaymentGateway interface)
+  - MockPaymentGateway with 90% success rate for development/testing
+  - Payment processing with idempotency guarantees via unique constraint
+  - Atomic order status transition to PAID on successful payment
+  - BigDecimal amount validation using compareTo() for exact order total matching
+  - Customer endpoints: POST /api/v1/orders/{orderId}/payments (process payment with Idempotency-Key header), GET /api/v1/orders/{orderId}/payments (payment history)
+  - PaymentService with comprehensive idempotency checks and gateway integration
+  - DTOs: PaymentRequest (with Jakarta validation), PaymentResponse
+  - Gateway responses: PaymentGatewayResult record with success/gatewayReference
+  - Failed payments keep order in CONFIRMED status for retry with new idempotency key
+  - Comprehensive SLF4J logging at all critical payment processing steps
+  - OpenAPI documentation for all payment endpoints
+  - User stories satisfied: US-013 (Pay for order), US-025 (Payment idempotency)
+
 - **Catalog Backend (Feature 07)** ✅ COMPLETE:
   - Product entity with UUID primary key, optimistic locking (@Version), and SKU uniqueness
   - ProductRepository with custom @Query for filtered active product searches

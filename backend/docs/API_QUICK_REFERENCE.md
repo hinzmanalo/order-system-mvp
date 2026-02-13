@@ -116,6 +116,31 @@ Authorization: Bearer {accessToken}
 # → 200 OK + OrderResponse (status: CANCELLED)
 ```
 
+## Payments (Authenticated)
+
+### Process Payment
+
+```bash
+POST /orders/{orderId}/payments
+Authorization: Bearer {accessToken}
+Idempotency-Key: unique-key-12345
+{
+  "amount": 99.98
+}
+# → 200 OK + PaymentResponse
+# Note: Requires Idempotency-Key header to prevent duplicate processing
+# Amount must exactly match order total
+```
+
+### Get Payment History
+
+```bash
+GET /orders/{orderId}/payments
+Authorization: Bearer {accessToken}
+# → 200 OK + List<PaymentResponse>
+# Returns all payment attempts (successful and failed) for the order
+```
+
 ## Admin - Users
 
 ### List All Users

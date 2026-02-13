@@ -86,6 +86,8 @@ Complete documentation for the OrderHub backend REST API.
 - `POST /api/v1/orders` - Create order
 - `GET /api/v1/orders` - List my orders
 - `POST /api/v1/orders/{id}/cancel` - Cancel order
+- `POST /api/v1/orders/{orderId}/payments` - Process payment
+- `GET /api/v1/orders/{orderId}/payments` - Get payment history
 
 ### Admin Endpoints (Admin Role Required)
 

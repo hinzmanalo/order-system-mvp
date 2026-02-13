@@ -41,11 +41,11 @@ OrderHub is a **portfolio-grade monolithic ordering system** demonstrating enter
 ┌─────────────────────────────────────────────────────────────────┐
 │                      OrderHub Application                        │
 ├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌───────────┐  ┌────────┐  ┌───────┐│
-│  │  Auth   │  │ Catalog │  │ Inventory │  │ Orders │  │Common ││
-│  └────┬────┘  └────┬────┘  └─────┬─────┘  └───┬────┘  └───┬───┘│
-│       │            │             │            │           │     │
-│       └────────────┴─────────────┴────────────┴───────────┘     │
+│  ┌──────┐  ┌───────┐  ┌─────────┐  ┌──────┐  ┌────────┐ ┌─────┐│
+│  │ Auth │  │Catalog│  │Inventory│  │Orders│  │Payments│ │Comm.││
+│  └──┬───┘  └───┬───┘  └────┬────┘  └──┬───┘  └───┬────┘ └──┬──┘│
+│     │          │           │          │          │         │   │
+│     └──────────┴───────────┴──────────┴──────────┴─────────┘   │
 │                              │                                   │
 │                    Spring Framework Core                         │
 ├─────────────────────────────────────────────────────────────────┤
@@ -56,9 +56,9 @@ OrderHub is a **portfolio-grade monolithic ordering system** demonstrating enter
 ### Module Dependency Graph
 
 ```
-common ← auth ← catalog ← inventory ← orders
-   ↑       ↑        ↑          ↑         ↑
-   └───────┴────────┴──────────┴─────────┘
+common ← auth ← catalog ← inventory ← orders ← payments
+   ↑       ↑        ↑          ↑         ↑        ↑
+   └───────┴────────┴──────────┴─────────┴────────┘
    (shared exceptions, config, utilities)
 ```
 
@@ -66,7 +66,7 @@ common ← auth ← catalog ← inventory ← orders
 
 - Modules can only depend on modules to their left
 - `common` has no module dependencies (foundational)
-- `orders` can access all other modules
+- `payments` can access all other modules
 - Inter-module calls use **direct service injection** (same JVM)
 
 ---
@@ -220,6 +220,31 @@ orders/
     └── OrderServiceImpl.java
 ```
 
+#### Payments Module (`com.orderhub.payments`)
+
+Payment processing with idempotency and gateway abstraction.
+
+```
+payments/
+├── controller/
+│   └── PaymentController.java   # Payment processing endpoints
+├── dto/
+│   ├── PaymentRequest.java
+│   └── PaymentResponse.java
+├── entity/
+│   ├── Payment.java            # Payment with idempotency key
+│   └── PaymentStatus.java      # SUCCESS, FAILED
+├── gateway/
+│   ├── PaymentGateway.java     # Strategy interface
+│   ├── PaymentGatewayResult.java
+│   └── MockPaymentGateway.java # 90% success rate
+├── repository/
+│   └── PaymentRepository.java
+└── service/
+    ├── PaymentService.java
+    └── PaymentServiceImpl.java
+```
+
 ---
 
 ## Domain Model
@@ -251,22 +276,35 @@ orders/
 │ totalAmount      │        │ price: BigDecimal│
 │ createdAt        │        │ sku: String (UQ) │
 │ updatedAt        │        │ active: boolean  │
-└────────┬─────────┘        │ version: int     │
-         │ 1                │ createdAt        │
-         │                  │ updatedAt        │
-         │ *                └────────┬─────────┘
-┌────────┴─────────┐                 │ 1
-│    OrderItem     │                 │
-├──────────────────┤                 │ 1
-│ id: UUID (PK)    │        ┌────────┴─────────┐
-│ order_id: FK     │        │    Inventory     │
-│ product_id: FK   │        ├──────────────────┤
-│ quantity: int    │        │ id: UUID (PK)    │
-│ unitPrice        │        │ product_id: FK   │
-│ subtotal         │        │ quantity: int    │
-└──────────────────┘        │ version: int     │
-                            │ updatedAt        │
-                            └──────────────────┘
+└────┬───┬─────────┘        │ version: int     │
+     │   │ 1                │ createdAt        │
+     │   │                  │ updatedAt        │
+     │   │ *                └────────┬─────────┘
+     │   │                           │ 1
+     │ 1 │                           │
+     │   │                           │ 1
+     │   │          ┌────────────────┴─────────┐
+     │   │          │    Inventory             │
+     │   │          ├──────────────────────────┤
+     │ * │          │ id: UUID (PK)            │
+┌────┴───┴────┐    │ product_id: FK           │
+│  Payment    │    │ quantity: int            │
+├─────────────┤    │ version: int             │
+│ id: UUID(PK)│    │ updatedAt                │
+│ order_id: FK│    └──────────────────────────┘
+│ amount      │             │ 1
+│ status: Enum│             │
+│ idempotency │             │ *
+│  _key (UQ)  │    ┌────────┴─────────┐
+│ gatewayRef  │    │    OrderItem     │
+│ createdAt   │    ├──────────────────┤
+└─────────────┘    │ id: UUID (PK)    │
+                   │ order_id: FK     │
+                   │ product_id: FK   │
+                   │ quantity: int    │
+                   │ unitPrice        │
+                   │ subtotal         │
+                   └──────────────────┘
 ```
 
 ### Order State Machine
@@ -369,6 +407,51 @@ orders/
    │<──────────────│ 200 OK            │                     │
 ```
 
+### Payment Processing Flow
+
+```
+┌──────┐  ┌────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────┐  ┌──────────────┐
+│Client│  │PaymentCtrl │  │PaymentService│  │PaymentGateway│  │OrderService│  │PaymentRepo   │
+└──┬───┘  └─────┬──────┘  └──────┬───────┘  └──────┬───────┘  └─────┬──────┘  └──────┬───────┘
+   │            │                │                 │                │                 │
+   │ POST /pay  │                │                 │                │                 │
+   │ Idempotency│                │                 │                │                 │
+   │ -Key: xyz  │                │                 │                │                 │
+   │───────────>│                │                 │                │                 │
+   │            │ processPayment()                 │                │                 │
+   │            │───────────────>│                 │                │                 │
+   │            │                │ BEGIN TRANSACTION                │                 │
+   │            │                │═════════════════════════════════════════════════════│
+   │            │                │                 │                │                 │
+   │            │                │ findByIdempotencyKey(xyz)        │                 │
+   │            │                │─────────────────────────────────────────────────────│
+   │            │                │<────────────────────────────────────────────────────│
+   │            │                │ (if exists, return cached result)                   │
+   │            │                │                 │                │                 │
+   │            │                │ validate order  │                │                 │
+   │            │                │ (status, amount)│                │                 │
+   │            │                │                 │                │                 │
+   │            │                │ processPayment()│                │                 │
+   │            │                │────────────────>│                │                 │
+   │            │                │<────────────────│                │                 │
+   │            │                │ (90% success)   │                │                 │
+   │            │                │                 │                │                 │
+   │            │                │ save(payment)   │                │                 │
+   │            │                │─────────────────────────────────────────────────────│
+   │            │                │                 │                │                 │
+   │            │                │ if SUCCESS:     │                │                 │
+   │            │                │ updateOrderStatusToPaid()        │                 │
+   │            │                │──────────────────────────────────>│                 │
+   │            │                │<──────────────────────────────────│                 │
+   │            │                │                 │                │                 │
+   │            │                │ COMMIT TRANSACTION                │                 │
+   │            │                │═════════════════════════════════════════════════════│
+   │            │<───────────────│                 │                │                 │
+   │<───────────│ 200 OK         │                 │                │                 │
+   │  (payment  │                │                 │                │                 │
+   │   result)  │                │                 │                │                 │
+```
+
 ---
 
 ## API Design
@@ -414,7 +497,13 @@ Orders (Authenticated)
 └── POST   /api/v1/orders/{id}/cancel # Cancel order
 
 Payments (Authenticated)
-└── POST   /api/v1/payments          # Process payment (with Idempotency-Key)
+├── POST   /api/v1/orders/{orderId}/payments  # Process payment (requires Idempotency-Key)
+└── GET    /api/v1/orders/{orderId}/payments  # Get payment history
+
+Admin Orders
+├── GET    /api/v1/admin/orders            # List all orders
+├── GET    /api/v1/admin/orders/{id}       # Get any order
+└── POST   /api/v1/admin/orders/{id}/cancel # Cancel any order
 
 Admin Orders
 └── GET    /api/v1/admin/orders      # List all orders

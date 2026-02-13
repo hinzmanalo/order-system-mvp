@@ -97,6 +97,11 @@ Backend API will be available at `http://localhost:8080`.
 - `PUT /{id}` - Update product
 - `PATCH /{id}/status` - Activate/deactivate product
 
+**Payment Processing** (`/api/v1/orders/{orderId}/payments`):
+
+- `POST /` - Process payment (requires Idempotency-Key header)
+- `GET /` - Get payment history for order
+
 #### 3. Run Frontend (Angular)
 
 ```bash
