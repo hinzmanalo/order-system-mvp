@@ -74,6 +74,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
+                .setId(UUID.randomUUID().toString())
                 .claim("email", user.getEmail())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(now)

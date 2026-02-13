@@ -128,9 +128,6 @@ public class AuthController {
     })
     public ResponseEntity<UserResponse> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
-        logger.debug("Retrieving current user information for email: {}", email);
 
         // Extract user ID from JWT token in request header
         org.springframework.web.context.request.RequestAttributes requestAttributes = org.springframework.web.context.request.RequestContextHolder
@@ -139,8 +136,14 @@ public class AuthController {
                 .getRequest();
 
         String bearerToken = request.getHeader("Authorization");
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            logger.warn("Missing or invalid Authorization header for /me endpoint");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         String jwt = bearerToken.substring(7);
         UUID userId = tokenProvider.getUserIdFromToken(jwt);
+
+        logger.debug("Retrieving current user information for user ID: {}", userId);
 
         UserResponse response = authService.getCurrentUser(userId);
 
