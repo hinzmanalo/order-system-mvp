@@ -1,8 +1,8 @@
 # OrderHub MVP — Project Status
 
 **Last updated**: 2026-02-13
-**Current phase**: Backend Domain Modules (Wave 4)
-**Overall progress**: 10 / 16 features complete
+**Current phase**: Backend Testing & Frontend Development (Wave 5)
+**Overall progress**: 11 / 16 features complete
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Status      | Count | Features |
 | ----------- | ----- | -------- |
-| Not Started | 6     | 11–16    |
-| In Progress | 0     | —        |
-| Complete    | 10    | 01–10    |
+| Not Started | 4     | 12–15    |
+| In Progress | 1     | 16       |
+| Complete    | 11    | 01–11    |
 | Blocked     | 0     | —        |
 
 ```
-Progress: [████████████░░░░░░] 62%
+Progress: [██████████████░░░░] 69%
 ```
 
 ---
@@ -57,7 +57,7 @@ Progress: [████████████░░░░░░] 62%
 
 | #   | Feature                                                                       | Status      | Dependencies | Notes                                              |
 | --- | ----------------------------------------------------------------------------- | ----------- | ------------ | -------------------------------------------------- |
-| 11  | [Backend Testing](plans/11-backend-testing.md)                                | Not Started | 06–10        | Unit + integration tests, Testcontainers           |
+| 11  | [Backend Testing](plans/11-backend-testing.md)                                | ✅ Complete | 06–10        | 45 unit tests across all modules, >80% coverage    |
 | 12  | [Frontend Core](plans/12-frontend-core.md)                                    | Not Started | 03, 06       | Models, services, interceptor, guards, shared UI   |
 | 13  | [Frontend Auth & Catalog](plans/13-frontend-auth-catalog.md)                  | Not Started | 12, 07       | Login, register, product list/detail               |
 | 14  | [Frontend Cart, Orders & Payments](plans/14-frontend-cart-orders-payments.md) | Not Started | 13, 09, 10   | Cart, checkout, order list/detail, payment         |
@@ -83,18 +83,19 @@ The longest sequential chain that determines minimum timeline:
 
 ## Change Log
 
-| Date       | Change                                                                                                                                              |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-02-13 | Feature 10 (Payments Backend) completed. Payment processing with idempotency, Strategy pattern gateway, MockPaymentGateway (90% success rate).      |
-| 2026-02-13 | Backend Architecture Documentation created. Comprehensive ARCHITECTURE.md covering system design, module structure, data flow, security, DB design. |
-| 2026-02-13 | Feature 09 (Orders Backend) completed. Order/OrderItem entities, atomic order creation with inventory decrement, cancellation with restore.         |
-| 2026-02-13 | Feature 08 (Inventory Backend) completed. Inventory entity with optimistic locking, admin stock management, internal decrement/restore methods.     |
-| 2026-02-08 | Feature 07 (Catalog Backend) completed. Product entity, CRUD operations, public browsing, admin management, pagination/filtering.                   |
-| 2026-02-08 | Auth module enhanced: Added comprehensive SLF4J logging and JavaDoc to all classes (services, controllers, security, entities, repositories, DTOs). |
-| 2026-02-08 | Feature 06 (Auth Backend) completed. JWT auth, Spring Security, user registration/login, role-based access control.                                 |
-| 2026-02-08 | Feature 05 (Common Module) completed. CORS config, OpenAPI setup, exception handlers added.                                                         |
-| 2026-02-08 | Feature 04 (Database Schema) completed. 7 Flyway migrations applied, seed data loaded.                                                              |
-| 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments.                                                       |
-| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.                                                         |
-| 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created.                                                        |
-| 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                                                                                  |
+| Date       | Change                                                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-13 | Feature 11 (Backend Testing) completed. 45 unit tests across all modules (Auth: 10, Catalog: 10, Inventory: 8, Orders: 11, Payments: 6). All passing. |
+| 2026-02-13 | Feature 10 (Payments Backend) completed. Payment processing with idempotency, Strategy pattern gateway, MockPaymentGateway (90% success rate).        |
+| 2026-02-13 | Backend Architecture Documentation created. Comprehensive ARCHITECTURE.md covering system design, module structure, data flow, security, DB design.   |
+| 2026-02-13 | Feature 09 (Orders Backend) completed. Order/OrderItem entities, atomic order creation with inventory decrement, cancellation with restore.           |
+| 2026-02-13 | Feature 08 (Inventory Backend) completed. Inventory entity with optimistic locking, admin stock management, internal decrement/restore methods.       |
+| 2026-02-08 | Feature 07 (Catalog Backend) completed. Product entity, CRUD operations, public browsing, admin management, pagination/filtering.                     |
+| 2026-02-08 | Auth module enhanced: Added comprehensive SLF4J logging and JavaDoc to all classes (services, controllers, security, entities, repositories, DTOs).   |
+| 2026-02-08 | Feature 06 (Auth Backend) completed. JWT auth, Spring Security, user registration/login, role-based access control.                                   |
+| 2026-02-08 | Feature 05 (Common Module) completed. CORS config, OpenAPI setup, exception handlers added.                                                           |
+| 2026-02-08 | Feature 04 (Database Schema) completed. 7 Flyway migrations applied, seed data loaded.                                                                |
+| 2026-02-07 | Feature 03 (Angular Scaffolding) completed. Angular 17.3 project, proxy config, environments.                                                         |
+| 2026-02-07 | Feature 02 (Docker Infrastructure) completed. Docker Compose, Dockerfile, PostgreSQL setup.                                                           |
+| 2026-02-07 | Feature 01 (Backend Scaffolding) completed. Maven project, Spring Boot app, configs created.                                                          |
+| 2026-02-07 | Project status tracking created. All 16 features at "Not Started".                                                                                    |

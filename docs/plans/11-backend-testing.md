@@ -1,4 +1,4 @@
-# Feature 11: Backend Testing
+# Feature 11: Backend Unit Testing
 
 **Priority**: Quality
 **Dependencies**: 06-auth-backend, 07-catalog-backend, 08-inventory-backend, 09-orders-backend, 10-payments-backend
@@ -9,27 +9,18 @@
 
 ## Overview
 
-Implement comprehensive unit tests (JUnit 5 + Mockito) and integration tests (SpringBootTest + Testcontainers) targeting >80% service-layer coverage. This feature can run entirely in parallel with all frontend work.
+Implement comprehensive unit tests (JUnit 5 + Mockito) targeting >80% service-layer coverage. These tests verify business logic in isolation using mocked dependencies. This feature can run entirely in parallel with all frontend work.
+
+**Note**: Integration tests (SpringBootTest + Testcontainers) are deferred to Phase 17, to be implemented after frontend completion.
 
 ## User Stories
 
-- All stories are validated through tests
-- US-024: Concurrent order handling — tested via integration test with ExecutorService
+- All user stories are validated through unit tests
+- Business logic is tested in isolation with mocked dependencies
 
 ## Tasks
 
-### 11.1 Test infrastructure
-
-- [ ] Verify Testcontainers PostgreSQL dependency in `pom.xml` (test scope)
-- [ ] Create `com.orderhub.BaseIntegrationTest.java`:
-  - `@SpringBootTest(webEnvironment = RANDOM_PORT)`
-  - `@Testcontainers`
-  - `@Container` static PostgreSQLContainer with postgres:16-alpine
-  - `@DynamicPropertySource` to set datasource URL, username, password
-  - Shared container instance across all integration tests (singleton pattern)
-- [ ] Configure `src/test/resources/application-test.yml` if needed
-
-### 11.2 Auth unit tests
+### 11.1 Auth unit tests
 
 - [ ] `com.orderhub.auth.service.AuthServiceTest.java`:
   - [ ] `register_success` — valid input creates user with hashed password
@@ -43,7 +34,7 @@ Implement comprehensive unit tests (JUnit 5 + Mockito) and integration tests (Sp
   - [ ] `updateRole_userToAdmin_success` — role changed
   - [ ] `updateRole_alreadyAdmin_idempotent` — no error
 
-### 11.3 Catalog unit tests
+### 11.2 Catalog unit tests
 
 - [ ] `com.orderhub.catalog.service.ProductServiceTest.java`:
   - [ ] `createProduct_success_createsInventory` — product + inventory(qty=0) created
@@ -57,7 +48,7 @@ Implement comprehensive unit tests (JUnit 5 + Mockito) and integration tests (Sp
   - [ ] `getActiveProducts_filterByPriceRange` — price filter works
   - [ ] `getProductById_notFound_throws` — throws ResourceNotFoundException
 
-### 11.4 Inventory unit tests
+### 11.3 Inventory unit tests
 
 - [ ] `com.orderhub.inventory.service.InventoryServiceTest.java`:
   - [ ] `setStock_success` — quantity set to absolute value
@@ -69,7 +60,7 @@ Implement comprehensive unit tests (JUnit 5 + Mockito) and integration tests (Sp
   - [ ] `restoreStock_success` — quantity increased
   - [ ] `optimisticLock_conflict` — simulate version mismatch, verify exception
 
-### 11.5 Order unit tests
+### 11.4 Order unit tests
 
 - [ ] `com.orderhub.orders.service.OrderServiceTest.java`:
   - [ ] `createOrder_success_multipleItems` — order CONFIRMED, inventory decremented, prices snapshot
@@ -84,7 +75,7 @@ Implement comprehensive unit tests (JUnit 5 + Mockito) and integration tests (Sp
   - [ ] `updateOrderStatusToPaid_success` — status changes to PAID
   - [ ] `updateOrderStatusToPaid_notConfirmed_throws` — throws InvalidOrderStateException
 
-### 11.6 Payment unit tests
+### 11.5 Payment unit tests
 
 - [ ] `com.orderhub.payments.service.PaymentServiceTest.java`:
   - [ ] `processPayment_success` — payment SUCCESS, order PAID
@@ -94,74 +85,25 @@ Implement comprehensive unit tests (JUnit 5 + Mockito) and integration tests (Sp
   - [ ] `processPayment_notConfirmedOrder_throws` — throws InvalidOrderStateException
   - [ ] `processPayment_orderNotFound_throws` — throws ResourceNotFoundException
 
-### 11.7 Auth integration tests
-
-- [ ] `com.orderhub.auth.controller.AuthControllerIntegrationTest.java`:
-  - [ ] `register_login_accessProtectedResource` — full auth flow
-  - [ ] `register_duplicateEmail_returns409` — via HTTP
-  - [ ] `login_invalidCredentials_returns401` — via HTTP
-  - [ ] `accessProtectedEndpoint_noToken_returns401`
-  - [ ] `accessAdminEndpoint_asUser_returns403`
-  - [ ] `refreshToken_success_rotatesTokens` — old token invalid
-  - [ ] `me_returnsCurrentUser`
-
-### 11.8 Catalog integration tests
-
-- [ ] `com.orderhub.catalog.controller.ProductControllerIntegrationTest.java`:
-  - [ ] `getProducts_publicAccess_returnsPaginated`
-  - [ ] `getProducts_withFilters_filtersCorrectly`
-  - [ ] `createProduct_asAdmin_returns201`
-  - [ ] `createProduct_asUser_returns403`
-  - [ ] `updateProduct_asAdmin_returns200`
-  - [ ] `deactivateProduct_excludedFromListing`
-
-### 11.9 Order integration tests
-
-- [ ] `com.orderhub.orders.controller.OrderControllerIntegrationTest.java`:
-  - [ ] `createOrder_pay_fullLifecycle` — order CONFIRMED → PAID, inventory decremented
-  - [ ] `createOrder_cancel_fullLifecycle` — order CONFIRMED → CANCELLED, inventory restored
-  - [ ] `createOrder_insufficientStock_returns409`
-  - [ ] `cancelOrder_paid_returns409`
-  - [ ] `adminViewAllOrders_success`
-
-### 11.10 Payment integration tests
-
-- [ ] `com.orderhub.payments.controller.PaymentControllerIntegrationTest.java`:
-  - [ ] `processPayment_success_orderPaid`
-  - [ ] `processPayment_amountMismatch_returns422`
-  - [ ] `processPayment_missingIdempotencyKey_returns400`
-  - [ ] `processPayment_duplicateKey_returnsExisting`
-  - [ ] `processPayment_cancelledOrder_returns409`
-
-### 11.11 Inventory concurrency test
-
-- [ ] `com.orderhub.inventory.repository.InventoryRepositoryTest.java`:
-  - [ ] `concurrentDecrement_optimisticLocking` — use ExecutorService with 10 threads decrementing same product → verify no overselling, some requests fail with OptimisticLockingFailureException
-
 ## Verification
 
-- [ ] `mvn test` — all unit tests pass
-- [ ] `mvn verify` — all integration tests pass (requires Docker for Testcontainers)
+- [ ] `mvn clean test` — all unit tests pass (45 tests total)
 - [ ] Service-layer coverage >80% (check via JaCoCo or IDE coverage tool)
+- [ ] No integration with external systems (all dependencies mocked)
 
 ## Files Created
 
 ```
 backend/src/test/java/com/orderhub/
-├── BaseIntegrationTest.java
-├── auth/
-│   ├── service/AuthServiceTest.java
-│   └── controller/AuthControllerIntegrationTest.java
-├── catalog/
-│   ├── service/ProductServiceTest.java
-│   └── controller/ProductControllerIntegrationTest.java
-├── inventory/
-│   ├── service/InventoryServiceTest.java
-│   └── repository/InventoryRepositoryTest.java
-├── orders/
-│   ├── service/OrderServiceTest.java
-│   └── controller/OrderControllerIntegrationTest.java
-└── payments/
-    ├── service/PaymentServiceTest.java
-    └── controller/PaymentControllerIntegrationTest.java
+├── auth/service/AuthServiceTest.java
+├── catalog/service/ProductServiceTest.java
+├── inventory/service/InventoryServiceTest.java
+├── orders/service/OrderServiceTest.java
+└── payments/service/PaymentServiceTest.java
 ```
+
+## Notes
+
+- All tests use Mockito for mocking repositories and dependencies
+- Tests verify business logic, exception handling, and edge cases
+- Integration tests (with Testcontainers) deferred to Phase 17

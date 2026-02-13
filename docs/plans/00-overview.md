@@ -16,12 +16,13 @@ This directory contains the implementation plan split into individual features. 
 | 08  | [Inventory Backend](08-inventory-backend.md)                            | Core       | 05, 07             |
 | 09  | [Orders Backend](09-orders-backend.md)                                  | Core       | 06, 07, 08         |
 | 10  | [Payments Backend](10-payments-backend.md)                              | Core       | 09                 |
-| 11  | [Backend Testing](11-backend-testing.md)                                | Quality    | 06, 07, 08, 09, 10 |
+| 11  | [Backend Unit Testing](11-backend-testing.md)                           | Quality    | 06, 07, 08, 09, 10 |
 | 12  | [Frontend Core](12-frontend-core.md)                                    | Frontend   | 03, 06             |
 | 13  | [Frontend Auth & Catalog](13-frontend-auth-catalog.md)                  | Frontend   | 12, 07             |
 | 14  | [Frontend Cart, Orders & Payments](14-frontend-cart-orders-payments.md) | Frontend   | 13, 09, 10         |
 | 15  | [Frontend Admin](15-frontend-admin.md)                                  | Frontend   | 13, 08             |
-| 16  | [Integration & Polish](16-integration-polish.md)                        | Final      | All                |
+| 16  | [Integration & Polish](16-integration-polish.md)                        | Final      | All (01-15)        |
+| 17  | [Backend Integration Testing](17-integration-testing.md)                | Post-MVP   | 16                 |
 
 ## Dependency Graph
 
@@ -39,10 +40,13 @@ This directory contains the implementation plan split into individual features. 
                                                                             ├── 15-frontend-admin                                         │
                                                                             │   (depends on 13, 08)                                       │
                                                                             │                                                             │
-                                                                            └──────────────────────── 11-backend-testing ─────────────────┘
+                                                                            └──────────────────────── 11-backend-unit-testing ────────────────┘
                                                                                                       (depends on 06-10)
 
-                                                        16-integration-polish (depends on ALL)
+                                                        16-integration-polish (depends on 01-15)
+                                                                    │
+                                                                    ▼
+                                                        17-integration-testing (Post-MVP)
 ```
 
 ## Parallelization Strategy
@@ -100,11 +104,11 @@ These are sequential: Catalog → Inventory → Orders → Payments.
 ### Wave 5 — Frontend + Backend Testing (parallel tracks)
 
 ```
-Track A (Frontend):                          Track B (Backend Testing):
-┌──────────────────────┐                     ┌──────────────────────┐
-│ 12 Frontend Core     │                     │ 11 Backend Testing   │
-└──────────┬───────────┘                     └──────────────────────┘
-           │
+Track A (Frontend):                          Track B (Backend Unit Testing):
+┌──────────────────────┐                     ┌──────────────────────────┐
+│ 12 Frontend Core     │                     │ 11 Backend Unit Testing  │
+└──────────┬───────────┘                     └──────────────────────────┘
+           │                                  (JUnit + Mockito, no Docker)
            ▼
 ┌──────────────────────────────┐
 │ 13 Frontend Auth & Catalog   │
@@ -120,13 +124,25 @@ Track A (Frontend):                          Track B (Backend Testing):
 **Track A** and **Track B** can run in parallel since they are independent.
 Within Track A, features 14 and 15 can run in parallel after 13 completes.
 
+**Note**: Integration tests (SpringBootTest + Testcontainers) are deferred to Phase 17 (Post-MVP).
+
 ### Wave 6 — Final
 
 ```
 ┌──────────────────────────┐
-│ 16 Integration & Polish  │  ← Needs everything complete
+│ 16 Integration & Polish  │  ← Needs everything complete (01-15)
 └──────────────────────────┘
 ```
+
+### Post-MVP — Integration Testing
+
+```
+┌─────────────────────────────┐
+│ 17 Integration Testing      │  ← After frontend complete (needs 16)
+└─────────────────────────────┘
+```
+
+Phase 17 adds comprehensive integration tests with Testcontainers. Deferred to post-MVP to focus on delivering the core application first. Unit tests (Phase 11) provide adequate coverage during MVP development.
 
 ## Critical Path
 
@@ -137,6 +153,8 @@ The longest sequential chain determines the minimum implementation timeline:
 ```
 
 Shortening this chain is the key to faster delivery. The backend domain features (07-10) are the bottleneck — they must be sequential due to inter-module dependencies.
+
+**Post-MVP**: Phase 17 (Integration Testing) is not on the critical path for initial delivery.
 
 ## How to Use These Plans
 
@@ -158,9 +176,10 @@ Shortening this chain is the key to faster delivery. The backend domain features
 - [x] 08 — Inventory Backend
 - [x] 09 — Orders Backend
 - [ ] 10 — Payments Backend
-- [ ] 11 — Backend Testing
+- [x] 11 — Backend Unit Testing
 - [ ] 12 — Frontend Core
 - [ ] 13 — Frontend Auth & Catalog
 - [ ] 14 — Frontend Cart, Orders & Payments
 - [ ] 15 — Frontend Admin
 - [ ] 16 — Integration & Polish
+- [ ] 17 — Backend Integration Testing (Post-MVP)
