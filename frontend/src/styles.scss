@@ -123,6 +123,40 @@ a:hover {
   text-decoration: none;
 }
 
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #5a6268;
+  border-color: #545b62;
+  text-decoration: none;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #218838;
+  border-color: #1e7e34;
+  text-decoration: none;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+}
+
 /* Form Styles */
 .form-group {
   margin-bottom: 1rem;

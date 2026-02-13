@@ -1,0 +1,197 @@
+<div class="container">
+  <div class="order-detail-page">
+    <!-- Back Link -->
+    <div class="back-link">
+      <a routerLink="/orders">← Back to Orders</a>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading order details...</p>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (errorMessage() && !order()) {
+      <div class="alert alert-error">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- Order Details -->
+    @if (!loading() && order()) {
+      <div class="order-content">
+        <!-- Success/Error Messages -->
+        @if (successMessage()) {
+          <div class="alert alert-success">
+            {{ successMessage() }}
+          </div>
+        }
+        @if (errorMessage()) {
+          <div class="alert alert-error">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Order Header -->
+        <div class="order-header">
+          <div class="header-info">
+            <h1>Order Details</h1>
+            <div class="order-meta">
+              <div class="meta-item">
+                <span class="label">Order ID:</span>
+                <span class="value">{{ order()!.id }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="label">Status:</span>
+                <span class="badge" [ngClass]="getStatusClass(order()!.status)">
+                  {{ order()!.status }}
+                </span>
+              </div>
+              <div class="meta-item">
+                <span class="label">Created:</span>
+                <span class="value">{{ order()!.createdAt | date: 'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Line Items -->
+        <div class="section">
+          <h2>Order Items</h2>
+          <div class="items-table-container">
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Unit Price</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of order()!.items; track item.productId) {
+                  <tr>
+                    <td class="product-name">{{ item.productName }}</td>
+                    <td class="quantity">{{ item.quantity }}</td>
+                    <td class="price">${{ item.unitPrice.toFixed(2) }}</td>
+                    <td class="subtotal">${{ item.subtotal.toFixed(2) }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="total-label">Order Total:</td>
+                  <td class="total-amount">${{ order()!.totalAmount.toFixed(2) }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Order Actions -->
+        <div class="section">
+          <h2>Actions</h2>
+          <div class="actions-container">
+            @if (order()!.status === 'CONFIRMED') {
+              <button
+                (click)="payOrder()"
+                [disabled]="paymentLoading()"
+                class="btn btn-success btn-lg"
+              >
+                @if (paymentLoading()) {
+                  <span class="spinner"></span>
+                  Processing Payment...
+                } @else {
+                  Pay Now
+                }
+              </button>
+              
+              <button
+                (click)="showCancelConfirmation()"
+                [disabled]="cancelLoading()"
+                class="btn btn-danger btn-lg"
+              >
+                @if (cancelLoading()) {
+                  <span class="spinner"></span>
+                  Cancelling...
+                } @else {
+                  Cancel Order
+                }
+              </button>
+            }
+
+            @if (order()!.status === 'PAID') {
+              <div class="status-message success">
+                ✓ Order has been paid
+              </div>
+            }
+
+            @if (order()!.status === 'CANCELLED') {
+              <div class="status-message cancelled">
+                ✗ Order was cancelled
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Payment History -->
+        @if (payments().length > 0) {
+          <div class="section">
+            <h2>Payment History</h2>
+            <div class="payments-table-container">
+              <table class="payments-table">
+                <thead>
+                  <tr>
+                    <th>Payment ID</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Gateway Reference</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (payment of payments(); track payment.id) {
+                    <tr>
+                      <td class="payment-id">{{ truncateId(payment.id) }}</td>
+                      <td>
+                        <span class="badge" [ngClass]="getPaymentStatusClass(payment.status)">
+                          {{ payment.status }}
+                        </span>
+                      </td>
+                      <td class="amount">${{ payment.amount.toFixed(2) }}</td>
+                      <td class="gateway-ref">
+                        {{ payment.gatewayReference || 'N/A' }}
+                      </td>
+                      <td class="date">{{ payment.createdAt | date: 'short' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Cancel Confirmation Dialog -->
+    @if (showCancelDialog()) {
+      <div class="modal-overlay" (click)="hideCancelConfirmation()">
+        <div class="modal-dialog" (click)="$event.stopPropagation()">
+          <h3>Cancel Order</h3>
+          <p>Are you sure you want to cancel this order?</p>
+          <div class="modal-actions">
+            <button (click)="confirmCancel()" class="btn btn-danger">
+              Yes, Cancel Order
+            </button>
+            <button (click)="hideCancelConfirmation()" class="btn btn-secondary">
+              No, Keep Order
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

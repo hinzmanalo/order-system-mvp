@@ -1,17 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CartService } from '../../core/services/cart.service';
 
+/**
+ * Shopping cart component for viewing and managing cart items
+ */
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="container">
-      <div class="card">
-        <h2>Shopping Cart</h2>
-        <p>Cart component placeholder - will be implemented in phase 14</p>
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, RouterLink, FormsModule],
+  templateUrl: './cart.component.html',
+  styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent {}
+export class CartComponent {
+  cartService = inject(CartService);
+
+  /**
+   * Updates the quantity of a cart item
+   */
+  updateQuantity(productId: string, quantity: number): void {
+    if (quantity > 0) {
+      this.cartService.updateQuantity(productId, quantity);
+    }
+  }
+
+  /**
+   * Removes an item from the cart
+   */
+  removeItem(productId: string): void {
+    this.cartService.removeFromCart(productId);
+  }
+
+  /**
+   * Calculates the subtotal for a cart item
+   */
+  getItemSubtotal(price: number, quantity: number): number {
+    return price * quantity;
+  }
+}
