@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Catalog Backend (Feature 07)** ✅ COMPLETE:
+  - Product entity with UUID primary key, optimistic locking (@Version), and SKU uniqueness
+  - ProductRepository with custom @Query for filtered active product searches
+  - Product CRUD operations with SKU validation and soft deletion via active flag
+  - Public endpoints: GET /api/v1/products (browse with pagination/filtering), GET /api/v1/products/{id} (detail)
+  - Admin endpoints: POST /api/v1/admin/products (create), PUT /api/v1/admin/products/{id} (update), PATCH /api/v1/admin/products/{id}/status (activate/deactivate)
+  - ProductService with Interface + Impl pattern and comprehensive SLF4J logging
+  - DTOs: ProductRequest (with Jakarta validation), ProductResponse, ProductStatusRequest
+  - Case-insensitive name filtering and price range filtering support
+  - OpenAPI documentation for all catalog endpoints
+  - Deactivated products excluded from public product listings
+  - User stories satisfied: US-005 (Browse products), US-006 (View product detail), US-014 (Admin create product), US-015 (Admin update product), US-016 (Admin activate/deactivate product)
+
 - **Authentication Backend (Feature 06)**:
   - JWT-based authentication with Spring Security
   - User registration and login endpoints with BCrypt password hashing
@@ -37,6 +50,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Custom exception classes (ResourceNotFound, DuplicateResource, InsufficientStock, InvalidOrderState, PaymentAmountMismatch)
   - Global exception handler with RFC 7807 Problem Detail responses
   - Standardized error handling for all backend modules
+
+### Fixed
+
+- **ProductRepository JPQL type casting issue**: Added explicit `CAST(:name AS string)` in the `findActiveProducts` query to prevent PostgreSQL `function lower(bytea) does not exist` error when nullable parameters are used in CONCAT operations
 
 ### Changed
 

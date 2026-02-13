@@ -80,11 +80,22 @@ Backend API will be available at `http://localhost:8080`.
 - `POST /api/v1/auth/refresh` - Refresh access token
 - `GET /api/v1/auth/me` - Get current user profile
 
-**Admin Endpoints** (requires ADMIN role):
+**Product Catalog Endpoints** (`/api/v1/products`):
 
-- `GET /api/v1/admin/users` - List all users
-- `GET /api/v1/admin/users/{id}` - Get user by ID
-- `PUT /api/v1/admin/users/{id}/role` - Update user role
+- `GET /` - Browse active products (paginated, filterable by name/price)
+- `GET /{id}` - Get product details
+
+**Admin - User Management** (`/api/v1/admin/users`) (requires ADMIN role):
+
+- `GET /` - List all users (paginated)
+- `GET /{id}` - Get user by ID
+- `PUT /{id}/role` - Update user role
+
+**Admin - Product Management** (`/api/v1/admin/products`) (requires ADMIN role):
+
+- `POST /` - Create new product
+- `PUT /{id}` - Update product
+- `PATCH /{id}/status` - Activate/deactivate product
 
 #### 3. Run Frontend (Angular)
 
@@ -261,13 +272,16 @@ ng help
 - `GET /{id}` - Get user by ID (ADMIN only)
 - `PUT /{id}/role` - Update user role (ADMIN only)
 
-### Products (`/api/v1/products`) - Planned
+### Products (`/api/v1/products`) ✅ Implemented
 
-- `GET /` - List products (pagination, filtering)
+- `GET /` - List active products (pagination, name/price filtering)
 - `GET /{id}` - Get product details
+
+### Admin - Products (`/api/v1/admin/products`) ✅ Implemented
+
 - `POST /` - Create product (ADMIN only)
 - `PUT /{id}` - Update product (ADMIN only)
-- `DELETE /{id}` - Deactivate product (ADMIN only)
+- `PATCH /{id}/status` - Activate/deactivate product (ADMIN only)
 
 ### Inventory (`/api/v1/inventory`) - Planned
 
@@ -384,7 +398,7 @@ Inter-module communication uses direct service injection (same JVM), not REST ca
 
 ## Current Status
 
-**Progress**: 6 / 16 features complete (38%)
+**Progress**: 7 / 16 features complete (44%)
 
 ### ✅ Completed
 
@@ -394,11 +408,12 @@ Inter-module communication uses direct service injection (same JVM), not REST ca
 - Feature 04: Database Schema (7 Flyway migrations + seed data)
 - Feature 05: Common Module (CORS, OpenAPI, exception handlers)
 - Feature 06: Auth Backend (JWT, Spring Security, user registration/login)
+- Feature 07: Catalog Backend (Product CRUD, pagination, filtering)
 
 ### 🚧 Next Up
 
-- Feature 07: Catalog Backend (Product CRUD, pagination)
 - Feature 08: Inventory Backend (Stock management, optimistic locking)
+- Feature 09: Orders Backend (Atomic order creation, lifecycle)
 
 - Feature 05: Common Module (CORS, OpenAPI, exception handling)
 - Feature 06: Auth Backend (JWT, Spring Security, registration/login)

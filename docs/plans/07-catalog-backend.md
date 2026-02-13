@@ -23,7 +23,7 @@ Implement the product catalog module: product entity, CRUD operations for admins
 
 ### 7.1 Entity
 
-- [ ] `com.orderhub.catalog.entity.Product.java`:
+- [x] `com.orderhub.catalog.entity.Product.java`:
   - `@Table(name = "products")`
   - `id` UUID, `@Id @GeneratedValue(strategy = GenerationType.UUID)`
   - `name` String NOT NULL
@@ -36,7 +36,7 @@ Implement the product catalog module: product entity, CRUD operations for admins
 
 ### 7.2 Repository
 
-- [ ] `com.orderhub.catalog.repository.ProductRepository.java`:
+- [x] `com.orderhub.catalog.repository.ProductRepository.java`:
   - Extends `JpaRepository<Product, UUID>`
   - `boolean existsBySku(String sku)`
   - `boolean existsBySkuAndIdNot(String sku, UUID id)`
@@ -48,42 +48,42 @@ Implement the product catalog module: product entity, CRUD operations for admins
 
 ### 7.3 DTOs
 
-- [ ] `ProductRequest.java`:
+- [x] `ProductRequest.java`:
   - `@NotBlank` name
   - description (optional)
   - `@NotNull @Positive` price (BigDecimal)
   - `@NotBlank` sku
-- [ ] `ProductResponse.java`:
+- [x] `ProductResponse.java`:
   - id, name, description, price, sku, active, createdAt
-- [ ] `ProductStatusRequest.java`:
+- [x] `ProductStatusRequest.java`:
   - `@NotNull` active (Boolean)
 
 ### 7.4 Service
 
-- [ ] `com.orderhub.catalog.service.ProductService.java` — interface:
+- [x] `com.orderhub.catalog.service.ProductService.java` — interface:
   - `getActiveProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, Pageable)` → Page\<ProductResponse\>
   - `getProductById(UUID id)` → ProductResponse
   - `createProduct(ProductRequest)` → ProductResponse
   - `updateProduct(UUID id, ProductRequest)` → ProductResponse
   - `updateProductStatus(UUID id, ProductStatusRequest)` → ProductResponse
-- [ ] `com.orderhub.catalog.service.ProductServiceImpl.java`:
+- [x] `com.orderhub.catalog.service.ProductServiceImpl.java`:
   - **getActiveProducts**: query with optional name/price filters, map to DTO
   - **getProductById**: find or throw `ResourceNotFoundException`
   - **createProduct**:
     1. Check `existsBySku(sku)` → throw `DuplicateResourceException` if true
     2. Create and save Product entity
-    3. Create associated Inventory record with quantity=0 (via InventoryRepository or InventoryService)
+    3. Create associated Inventory record with quantity=0 (via InventoryRepository or InventoryService) — **TODO: Pending Phase 08**
     4. Return ProductResponse
   - **updateProduct**: find product, check SKU uniqueness (excluding self), update fields, save
   - **updateProductStatus**: find product, set active flag, save
 
 ### 7.5 Controllers
 
-- [ ] `com.orderhub.catalog.controller.ProductController.java` (public):
+- [x] `com.orderhub.catalog.controller.ProductController.java` (public):
   - `GET /api/v1/products?page=0&size=20&name=&minPrice=&maxPrice=&sort=name,asc`
     - All params optional, paginated Spring Page response
   - `GET /api/v1/products/{id}` → single product detail
-- [ ] `com.orderhub.catalog.controller.AdminProductController.java` (admin):
+- [x] `com.orderhub.catalog.controller.AdminProductController.java` (admin):
   - `POST /api/v1/admin/products` → 201 + ProductResponse
   - `PUT /api/v1/admin/products/{id}` → 200 + ProductResponse
   - `PATCH /api/v1/admin/products/{id}/status` → 200 + ProductResponse
@@ -97,18 +97,18 @@ Implement the product catalog module: product entity, CRUD operations for admins
 
 ## Verification
 
-- [ ] `GET /api/v1/products` returns paginated active products (no auth required)
-- [ ] `GET /api/v1/products?name=phone` filters by name (case-insensitive)
-- [ ] `GET /api/v1/products?minPrice=50&maxPrice=500` filters by price range
-- [ ] `GET /api/v1/products?sort=price,desc` sorts correctly
-- [ ] `GET /api/v1/products/{id}` returns single product
-- [ ] `GET /api/v1/products/{non-existent-id}` returns 404
-- [ ] `POST /api/v1/admin/products` as ADMIN → 201, creates product + inventory(qty=0)
-- [ ] `POST /api/v1/admin/products` with duplicate SKU → 409
-- [ ] `POST /api/v1/admin/products` as USER → 403
-- [ ] `PUT /api/v1/admin/products/{id}` updates product fields
-- [ ] `PATCH /api/v1/admin/products/{id}/status` with `{"active": false}` deactivates product
-- [ ] Deactivated product no longer appears in `GET /api/v1/products`
+- [x] `GET /api/v1/products` returns paginated active products (no auth required)
+- [x] `GET /api/v1/products?name=phone` filters by name (case-insensitive)
+- [x] `GET /api/v1/products?minPrice=50&maxPrice=500` filters by price range
+- [x] `GET /api/v1/products?sort=price,desc` sorts correctly
+- [x] `GET /api/v1/products/{id}` returns single product
+- [x] `GET /api/v1/products/{non-existent-id}` returns 404
+- [x] `POST /api/v1/admin/products` as ADMIN → 201, creates product (inventory pending Phase 08)
+- [x] `POST /api/v1/admin/products` with duplicate SKU → 409
+- [x] `POST /api/v1/admin/products` as USER → 403
+- [x] `PUT /api/v1/admin/products/{id}` updates product fields
+- [x] `PATCH /api/v1/admin/products/{id}/status` with `{"active": false}` deactivates product
+- [x] Deactivated product no longer appears in `GET /api/v1/products`
 
 ## Files Created
 
