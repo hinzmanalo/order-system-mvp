@@ -26,8 +26,16 @@
       </div>
     }
 
+    <!-- Error State -->
+    @if (!loading() && error()) {
+      <div class="error-state">
+        <p class="error-message">{{ error() }}</p>
+        <button (click)="loadOrders()" class="btn btn-primary">Retry</button>
+      </div>
+    }
+
     <!-- Empty State -->
-    @if (!loading() && orders().length === 0) {
+    @if (!loading() && !error() && orders().length === 0) {
       <div class="empty-state">
         <p class="empty-message">No orders found</p>
         <a routerLink="/products" class="btn btn-primary">Start Shopping</a>
@@ -35,7 +43,7 @@
     }
 
     <!-- Orders Table -->
-    @if (!loading() && orders().length > 0) {
+    @if (!loading() && !error() && orders().length > 0) {
       <div class="orders-table-container">
         <table class="orders-table">
           <thead>

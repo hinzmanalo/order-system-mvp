@@ -59,6 +59,22 @@
   }
 }
 
+.error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+  
+  .btn {
+    margin-top: 1rem;
+  }
+}
+
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;

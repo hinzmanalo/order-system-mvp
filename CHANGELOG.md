@@ -21,6 +21,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frontend test specs need JWT token mocking improvements
 - All runtime features working correctly
 
+### Fixed
+
+- **Order List Query PostgreSQL Type Inference Issue**:
+  - **Defect**: HTTP 500 Internal Server Error when navigating to "My Orders" page
+  - **Symptom**: PostgreSQL error "could not determine data type of parameter $4" when fetching user orders
+  - **Root Cause**: PostgreSQL unable to infer data types for optional `LocalDateTime` parameters (`createdAfter`, `createdBefore`) in JPQL queries when values are null. The dynamic query using `(:after IS NULL OR o.createdAt >= :after)` pattern caused prepared statement parameter type ambiguity.
+  - **Impact**: All order list endpoints (`GET /api/v1/orders` for users, admin order queries) returned 500 errors instead of paginated results
+  - **Fix**: Added explicit type casting in OrderRepository JPQL queries using `CAST(:after AS timestamp)` and `CAST(:before AS timestamp)` to provide PostgreSQL with explicit type hints for null-safe comparisons
+  - **Files Changed**:
+    - `backend/src/main/java/com/orderhub/orders/repository/OrderRepository.java`
+    - Updated `findByUserIdWithFilters()` and `findAllWithFilters()` query definitions
+  - **Resolution**: Orders now load successfully on both user and admin order list pages with optional date/status filtering
+
+- **Checkout Navigation Race Condition**:
+  - **Defect**: After placing an order, users were redirected to "Your cart is empty" message instead of order detail page
+  - **Root Cause**: CheckoutComponent had an Angular `effect()` watching cart items that automatically redirected to `/cart` when the cart became empty. When placing an order, the cart was cleared before navigation to order detail completed, triggering the effect and overriding the intended navigation.
+  - **Fix**: 
+    - Removed automatic `effect()`-based redirect (kept `ngOnInit` check for initial empty cart detection)
+    - Changed order placement flow to navigate to order detail page first, then clear cart after navigation promise resolves
+    - Added `isPlacingOrder` flag to prevent race conditions
+  - **Files Changed**:
+    - `frontend/src/app/features/checkout/checkout.component.ts`
+  - **Resolution**: Users now correctly navigate to order detail page after successful checkout
+
+- **Order List Error Handling**:
+  - **Enhancement**: Added comprehensive error state display and logging to order list component
+  - **Added**: Error message display with retry button, detailed console logging for debugging
+  - **Files Changed**:
+    - `frontend/src/app/features/orders/order-list/order-list.component.ts`
+    - `frontend/src/app/features/orders/order-list/order-list.component.html`
+    - `frontend/src/app/features/orders/order-list/order-list.component.scss`
+    - `frontend/src/app/core/services/order.service.ts`
+    - `frontend/src/app/core/interceptors/auth.interceptor.ts`
+
 ### Added
 
 - **Integration & Polish (Feature 16)** ✅ COMPLETE:

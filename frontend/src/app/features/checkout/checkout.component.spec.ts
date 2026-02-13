@@ -107,13 +107,20 @@ describe('CheckoutComponent', () => {
     });
   });
 
-  it('should clear cart and navigate on successful order', () => {
+  it('should clear cart and navigate on successful order', (done) => {
     orderService.createOrder.and.returnValue(of(mockOrder));
+    router.navigate.and.returnValue(Promise.resolve(true));
 
     component.placeOrder();
 
-    expect(cartService.clearCart).toHaveBeenCalled();
+    // Navigation should happen immediately
     expect(router.navigate).toHaveBeenCalledWith(['/orders', 'order-123']);
+
+    // Cart should be cleared after navigation completes
+    setTimeout(() => {
+      expect(cartService.clearCart).toHaveBeenCalled();
+      done();
+    }, 10);
   });
 
   it('should display error message on order failure', () => {

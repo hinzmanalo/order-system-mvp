@@ -12,17 +12,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // Add access token to request if available
   const token = authService.getAccessToken();
   if (token) {
+    console.log('Auth Interceptor: Adding token to request:', req.url);
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
       },
     });
+  } else {
+    console.warn('Auth Interceptor: No token available for request:', req.url);
   }
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       // Handle 401 Unauthorized errors
       if (error.status === 401 && !req.url.includes('/auth/login') && !req.url.includes('/auth/refresh')) {
+        console.log('Auth Interceptor: Handling 401 error for:', req.url);
         return handle401Error(req, next, authService);
       }
       return throwError(() => error);

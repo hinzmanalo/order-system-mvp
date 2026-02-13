@@ -54,6 +54,7 @@ export class OrderService {
       httpParams = httpParams.set('createdBefore', params.createdBefore);
     }
 
+    console.log('OrderService: Fetching orders with params', params);
     return this.http.get<OrderPage>(this.API_URL, { params: httpParams });
   }
 
