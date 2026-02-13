@@ -1,0 +1,116 @@
+<div class="product-detail-container">
+  <!-- Back Link -->
+  <button type="button" class="back-link" (click)="goBack()">
+    ← Back to Products
+  </button>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner-large"></div>
+      <p>Loading product details...</p>
+    </div>
+  }
+
+  <!-- Not Found State -->
+  @if (notFound() && !loading()) {
+    <div class="not-found-container">
+      <div class="not-found-icon">😕</div>
+      <h2>Product Not Found</h2>
+      <p>The product you're looking for doesn't exist or has been removed.</p>
+      <button type="button" class="btn-primary" (click)="goBack()">
+        Browse Products
+      </button>
+    </div>
+  }
+
+  <!-- Product Detail -->
+  @if (product() && !loading()) {
+    <div class="product-detail-card">
+      <div class="product-image-section">
+        <div class="product-image">
+          <div class="placeholder-image">
+            <span class="product-initial">{{ product()!.name.charAt(0) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-info-section">
+        <div class="product-header">
+          <h1 class="product-name">{{ product()!.name }}</h1>
+          <div class="product-meta">
+            <span class="product-sku">SKU: {{ product()!.sku }}</span>
+            @if (product()!.active) {
+              <span class="badge badge-success">In Stock</span>
+            } @else {
+              <span class="badge badge-danger">Out of Stock</span>
+            }
+          </div>
+        </div>
+
+        <div class="product-price-section">
+          <span class="product-price">${{ product()!.price.toFixed(2) }}</span>
+        </div>
+
+        <div class="product-description">
+          <h3>Description</h3>
+          <p>{{ product()!.description }}</p>
+        </div>
+
+        <div class="quantity-section">
+          <label for="quantity">Quantity</label>
+          <div class="quantity-control">
+            <button
+              type="button"
+              class="quantity-btn"
+              (click)="decrementQuantity()"
+              [disabled]="quantity() <= 1"
+            >
+              −
+            </button>
+            <input
+              id="quantity"
+              type="number"
+              [value]="quantity()"
+              (input)="updateQuantity(+$any($event.target).value)"
+              min="1"
+              class="quantity-input"
+            />
+            <button
+              type="button"
+              class="quantity-btn"
+              (click)="incrementQuantity()"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button
+            type="button"
+            class="btn-primary btn-large"
+            (click)="addToCart()"
+            [disabled]="!product()!.active"
+          >
+            Add to Cart
+          </button>
+          <button
+            type="button"
+            class="btn-secondary btn-large"
+            (click)="addToCartAndCheckout()"
+            [disabled]="!product()!.active"
+          >
+            Buy Now
+          </button>
+        </div>
+
+        @if (!product()!.active) {
+          <div class="out-of-stock-notice">
+            <p>⚠️ This product is currently out of stock</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
