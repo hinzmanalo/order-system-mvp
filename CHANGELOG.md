@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Checkout Navigation Race Condition**:
   - **Defect**: After placing an order, users were redirected to "Your cart is empty" message instead of order detail page
   - **Root Cause**: CheckoutComponent had an Angular `effect()` watching cart items that automatically redirected to `/cart` when the cart became empty. When placing an order, the cart was cleared before navigation to order detail completed, triggering the effect and overriding the intended navigation.
-  - **Fix**: 
+  - **Fix**:
     - Removed automatic `effect()`-based redirect (kept `ngOnInit` check for initial empty cart detection)
     - Changed order placement flow to navigate to order detail page first, then clear cart after navigation promise resolves
     - Added `isPlacingOrder` flag to prevent race conditions
