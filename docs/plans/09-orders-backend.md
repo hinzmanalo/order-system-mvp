@@ -25,8 +25,8 @@ Implement the order management module — the most complex backend feature. Incl
 
 ### 9.1 Entities
 
-- [ ] `com.orderhub.orders.entity.OrderStatus.java` — enum: `CONFIRMED`, `PAID`, `CANCELLED`
-- [ ] `com.orderhub.orders.entity.Order.java`:
+- [x] `com.orderhub.orders.entity.OrderStatus.java` — enum: `CONFIRMED`, `PAID`, `CANCELLED`
+- [x] `com.orderhub.orders.entity.Order.java`:
   - `@Table(name = "orders")`
   - `id` UUID
   - `user` User, `@ManyToOne(fetch = LAZY)`, `@JoinColumn(name = "user_id")`
@@ -34,7 +34,7 @@ Implement the order management module — the most complex backend feature. Incl
   - `totalAmount` BigDecimal
   - `items` List\<OrderItem\>, `@OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)`
   - `createdAt`, `updatedAt` LocalDateTime
-- [ ] `com.orderhub.orders.entity.OrderItem.java`:
+- [x] `com.orderhub.orders.entity.OrderItem.java`:
   - `@Table(name = "order_items")`
   - `id` UUID
   - `order` Order, `@ManyToOne(fetch = LAZY)`, `@JoinColumn(name = "order_id")`
@@ -45,7 +45,7 @@ Implement the order management module — the most complex backend feature. Incl
 
 ### 9.2 Repository
 
-- [ ] `com.orderhub.orders.repository.OrderRepository.java`:
+- [x] `com.orderhub.orders.repository.OrderRepository.java`:
   - `Page<Order> findByUserId(UUID userId, Pageable pageable)`
   - `Optional<Order> findByIdAndUserId(UUID id, UUID userId)`
   - Custom `@Query` for filtered search:
@@ -56,14 +56,14 @@ Implement the order management module — the most complex backend feature. Incl
 
 ### 9.3 DTOs
 
-- [ ] `OrderItemRequest.java` — `@NotNull` productId (UUID), `@NotNull @Min(1)` quantity (Integer)
-- [ ] `CreateOrderRequest.java` — `@NotEmpty @Valid` List\<OrderItemRequest\> items
-- [ ] `OrderResponse.java` — id, userId, status, items (List\<OrderItemResponse\>), totalAmount, createdAt
-- [ ] `OrderItemResponse.java` — productId, productName, quantity, unitPrice, subtotal
+- [x] `OrderItemRequest.java` — `@NotNull` productId (UUID), `@NotNull @Min(1)` quantity (Integer)
+- [x] `CreateOrderRequest.java` — `@NotEmpty @Valid` List\<OrderItemRequest\> items
+- [x] `OrderResponse.java` — id, userId, status, items (List\<OrderItemResponse\>), totalAmount, createdAt
+- [x] `OrderItemResponse.java` — productId, productName, quantity, unitPrice, subtotal
 
 ### 9.4 Service
 
-- [ ] `com.orderhub.orders.service.OrderService.java` — interface:
+- [x] `com.orderhub.orders.service.OrderService.java` — interface:
   - `createOrder(UUID userId, CreateOrderRequest)` → OrderResponse
   - `getOrderById(UUID orderId, UUID userId)` → OrderResponse
   - `getUserOrders(UUID userId, String status, LocalDateTime after, LocalDateTime before, Pageable)` → Page\<OrderResponse\>
@@ -72,7 +72,7 @@ Implement the order management module — the most complex backend feature. Incl
   - `getAnyOrderById(UUID orderId)` → OrderResponse
   - `cancelAnyOrder(UUID orderId)` → OrderResponse
   - `updateOrderStatusToPaid(UUID orderId)` — called by PaymentService
-- [ ] `com.orderhub.orders.service.OrderServiceImpl.java`:
+- [x] `com.orderhub.orders.service.OrderServiceImpl.java`:
   - Injects: `OrderRepository`, `ProductRepository` (or `ProductService`), `InventoryService`, `UserRepository`
   - **createOrder** (`@Transactional`):
     1. Load user by userId
@@ -98,14 +98,14 @@ Implement the order management module — the most complex backend feature. Incl
 
 ### 9.5 Controllers
 
-- [ ] `com.orderhub.orders.controller.OrderController.java` (authenticated):
+- [x] `com.orderhub.orders.controller.OrderController.java` (authenticated):
   - `POST /api/v1/orders` → 201 + OrderResponse
     - Extract userId from SecurityContext
   - `GET /api/v1/orders?page=0&size=10&status=CONFIRMED&createdAfter=2026-01-01&createdBefore=2026-12-31`
     - Returns only current user's orders
   - `GET /api/v1/orders/{id}` → OrderResponse (own order only, else 404)
   - `POST /api/v1/orders/{id}/cancel` → OrderResponse (own order only)
-- [ ] `com.orderhub.orders.controller.AdminOrderController.java` (admin):
+- [x] `com.orderhub.orders.controller.AdminOrderController.java` (admin):
   - `GET /api/v1/admin/orders?page=0&size=10&status=&createdAfter=&createdBefore=`
     - Returns all orders across all users
   - `GET /api/v1/admin/orders/{id}` → OrderResponse (any order)
@@ -119,17 +119,17 @@ Implement the order management module — the most complex backend feature. Incl
 
 ## Verification
 
-- [ ] `POST /api/v1/orders` with valid items → 201, order CONFIRMED, inventory decremented
-- [ ] `POST /api/v1/orders` with inactive product → error (409 or 400)
-- [ ] `POST /api/v1/orders` with insufficient stock → 409 with product details
-- [ ] `POST /api/v1/orders` with multiple items, one insufficient → entire order rejected, no inventory changed
-- [ ] `GET /api/v1/orders` returns only current user's orders
-- [ ] `GET /api/v1/orders/{id}` with other user's order → 404
-- [ ] `POST /api/v1/orders/{id}/cancel` on CONFIRMED order → CANCELLED, inventory restored
-- [ ] `POST /api/v1/orders/{id}/cancel` on PAID order → 409
-- [ ] `GET /api/v1/admin/orders` as ADMIN → returns all orders
-- [ ] `POST /api/v1/admin/orders/{id}/cancel` cancels any user's CONFIRMED order
-- [ ] Concurrent orders for last unit of product: one succeeds, other gets 409
+- [x] `POST /api/v1/orders` with valid items → 201, order CONFIRMED, inventory decremented
+- [x] `POST /api/v1/orders` with inactive product → error (409 or 400)
+- [x] `POST /api/v1/orders` with insufficient stock → 409 with product details
+- [x] `POST /api/v1/orders` with multiple items, one insufficient → entire order rejected, no inventory changed
+- [x] `GET /api/v1/orders` returns only current user's orders
+- [x] `GET /api/v1/orders/{id}` with other user's order → 404
+- [x] `POST /api/v1/orders/{id}/cancel` on CONFIRMED order → CANCELLED, inventory restored
+- [x] `POST /api/v1/orders/{id}/cancel` on PAID order → 409
+- [x] `GET /api/v1/admin/orders` as ADMIN → returns all orders
+- [x] `POST /api/v1/admin/orders/{id}/cancel` cancels any user's CONFIRMED order
+- [x] Concurrent orders for last unit of product: one succeeds, other gets 409
 
 ## Files Created
 

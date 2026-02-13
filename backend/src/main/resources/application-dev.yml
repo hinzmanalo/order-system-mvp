@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orderhub
+    username: orderhub
+    password: orderhub
+  jpa:
+    show-sql: true

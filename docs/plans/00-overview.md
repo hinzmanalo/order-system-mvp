@@ -4,24 +4,24 @@ This directory contains the implementation plan split into individual features. 
 
 ## Feature Index
 
-| # | Feature | Priority | Dependencies |
-|---|---------|----------|-------------|
-| 01 | [Backend Scaffolding](01-backend-scaffolding.md) | Foundation | None |
-| 02 | [Docker Infrastructure](02-docker-infrastructure.md) | Foundation | None |
-| 03 | [Angular Scaffolding](03-angular-scaffolding.md) | Foundation | None |
-| 04 | [Database Schema](04-database-schema.md) | Foundation | 01, 02 |
-| 05 | [Common Module](05-common-module.md) | Foundation | 01, 04 |
-| 06 | [Auth Backend](06-auth-backend.md) | Core | 05 |
-| 07 | [Catalog Backend](07-catalog-backend.md) | Core | 05, 06 |
-| 08 | [Inventory Backend](08-inventory-backend.md) | Core | 05, 07 |
-| 09 | [Orders Backend](09-orders-backend.md) | Core | 06, 07, 08 |
-| 10 | [Payments Backend](10-payments-backend.md) | Core | 09 |
-| 11 | [Backend Testing](11-backend-testing.md) | Quality | 06, 07, 08, 09, 10 |
-| 12 | [Frontend Core](12-frontend-core.md) | Frontend | 03, 06 |
-| 13 | [Frontend Auth & Catalog](13-frontend-auth-catalog.md) | Frontend | 12, 07 |
-| 14 | [Frontend Cart, Orders & Payments](14-frontend-cart-orders-payments.md) | Frontend | 13, 09, 10 |
-| 15 | [Frontend Admin](15-frontend-admin.md) | Frontend | 13, 08 |
-| 16 | [Integration & Polish](16-integration-polish.md) | Final | All |
+| #   | Feature                                                                 | Priority   | Dependencies       |
+| --- | ----------------------------------------------------------------------- | ---------- | ------------------ |
+| 01  | [Backend Scaffolding](01-backend-scaffolding.md)                        | Foundation | None               |
+| 02  | [Docker Infrastructure](02-docker-infrastructure.md)                    | Foundation | None               |
+| 03  | [Angular Scaffolding](03-angular-scaffolding.md)                        | Foundation | None               |
+| 04  | [Database Schema](04-database-schema.md)                                | Foundation | 01, 02             |
+| 05  | [Common Module](05-common-module.md)                                    | Foundation | 01, 04             |
+| 06  | [Auth Backend](06-auth-backend.md)                                      | Core       | 05                 |
+| 07  | [Catalog Backend](07-catalog-backend.md)                                | Core       | 05, 06             |
+| 08  | [Inventory Backend](08-inventory-backend.md)                            | Core       | 05, 07             |
+| 09  | [Orders Backend](09-orders-backend.md)                                  | Core       | 06, 07, 08         |
+| 10  | [Payments Backend](10-payments-backend.md)                              | Core       | 09                 |
+| 11  | [Backend Testing](11-backend-testing.md)                                | Quality    | 06, 07, 08, 09, 10 |
+| 12  | [Frontend Core](12-frontend-core.md)                                    | Frontend   | 03, 06             |
+| 13  | [Frontend Auth & Catalog](13-frontend-auth-catalog.md)                  | Frontend   | 12, 07             |
+| 14  | [Frontend Cart, Orders & Payments](14-frontend-cart-orders-payments.md) | Frontend   | 13, 09, 10         |
+| 15  | [Frontend Admin](15-frontend-admin.md)                                  | Frontend   | 13, 08             |
+| 16  | [Integration & Polish](16-integration-polish.md)                        | Final      | All                |
 
 ## Dependency Graph
 
@@ -48,30 +48,37 @@ This directory contains the implementation plan split into individual features. 
 ## Parallelization Strategy
 
 ### Wave 1 — Foundation (all parallel)
+
 ```
 ┌─────────────────────────┐  ┌──────────────────────────┐  ┌─────────────────────────┐
 │ 01 Backend Scaffolding  │  │ 02 Docker Infrastructure │  │ 03 Angular Scaffolding  │
 └─────────────────────────┘  └──────────────────────────┘  └─────────────────────────┘
 ```
+
 These three have **zero dependencies** on each other. Start all three simultaneously.
 
 ### Wave 2 — Database
+
 ```
 ┌──────────────────────┐
 │ 04 Database Schema   │  ← Needs 01 + 02 complete
 └──────────────────────┘
 ```
+
 Requires backend project and Docker (PostgreSQL) to be running.
 
 ### Wave 3 — Common + Auth
+
 ```
 ┌──────────────────────┐       ┌──────────────────────┐
 │ 05 Common Module     │  ──►  │ 06 Auth Backend      │
 └──────────────────────┘       └──────────────────────┘
 ```
+
 Sequential within this wave: Common must finish before Auth starts.
 
 ### Wave 4 — Backend domain modules (partially parallel)
+
 ```
 ┌──────────────────────┐
 │ 07 Catalog Backend   │  ← Needs 05, 06
@@ -87,9 +94,11 @@ Sequential within this wave: Common must finish before Auth starts.
 │ 09 Orders Backend    │  ──►  │ 10 Payments Backend  │
 └──────────────────────┘       └──────────────────────┘
 ```
+
 These are sequential: Catalog → Inventory → Orders → Payments.
 
 ### Wave 5 — Frontend + Backend Testing (parallel tracks)
+
 ```
 Track A (Frontend):                          Track B (Backend Testing):
 ┌──────────────────────┐                     ┌──────────────────────┐
@@ -107,10 +116,12 @@ Track A (Frontend):                          Track B (Backend Testing):
 │ Orders/Payments │  │                │
 └─────────────────┘  └────────────────┘
 ```
+
 **Track A** and **Track B** can run in parallel since they are independent.
 Within Track A, features 14 and 15 can run in parallel after 13 completes.
 
 ### Wave 6 — Final
+
 ```
 ┌──────────────────────────┐
 │ 16 Integration & Polish  │  ← Needs everything complete
@@ -137,15 +148,15 @@ Shortening this chain is the key to faster delivery. The backend domain features
 
 ## Completion Tracker
 
-- [ ] 01 — Backend Scaffolding
-- [ ] 02 — Docker Infrastructure
-- [ ] 03 — Angular Scaffolding
-- [ ] 04 — Database Schema
-- [ ] 05 — Common Module
-- [ ] 06 — Auth Backend
-- [ ] 07 — Catalog Backend
-- [ ] 08 — Inventory Backend
-- [ ] 09 — Orders Backend
+- [x] 01 — Backend Scaffolding
+- [x] 02 — Docker Infrastructure
+- [x] 03 — Angular Scaffolding
+- [x] 04 — Database Schema
+- [x] 05 — Common Module
+- [x] 06 — Auth Backend
+- [x] 07 — Catalog Backend
+- [x] 08 — Inventory Backend
+- [x] 09 — Orders Backend
 - [ ] 10 — Payments Backend
 - [ ] 11 — Backend Testing
 - [ ] 12 — Frontend Core

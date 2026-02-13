@@ -23,6 +23,21 @@
 hs_err_pid*
 replay_pid*
 
+# Maven
+backend/target/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
 #claude
 .claude/
 .DS_STORE
+.github/
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/

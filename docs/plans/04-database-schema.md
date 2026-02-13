@@ -19,11 +19,11 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.1 Migration directory
 
-- [ ] Create `backend/src/main/resources/db/migration/`
+- [x] Create `backend/src/main/resources/db/migration/`
 
 ### 4.2 V1 — Users table
 
-- [ ] Create `V1__create_users_table.sql`:
+- [x] Create `V1__create_users_table.sql`:
   ```sql
   CREATE TABLE users (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,7 +39,7 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.3 V2 — Products table
 
-- [ ] Create `V2__create_products_table.sql`:
+- [x] Create `V2__create_products_table.sql`:
   - `id` UUID PK with `gen_random_uuid()`
   - `name` VARCHAR(255) NOT NULL
   - `description` TEXT (nullable)
@@ -51,7 +51,7 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.4 V3 — Inventory table
 
-- [ ] Create `V3__create_inventory_table.sql`:
+- [x] Create `V3__create_inventory_table.sql`:
   - `id` UUID PK
   - `product_id` UUID NOT NULL, FK → products(id), UNIQUE
   - `quantity` INTEGER NOT NULL DEFAULT 0, CHECK (quantity >= 0)
@@ -60,7 +60,7 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.5 V4 — Orders and order items tables
 
-- [ ] Create `V4__create_orders_tables.sql`:
+- [x] Create `V4__create_orders_tables.sql`:
   - **orders** table:
     - `id` UUID PK
     - `user_id` UUID NOT NULL, FK → users(id)
@@ -79,7 +79,7 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.6 V5 — Payments table
 
-- [ ] Create `V5__create_payments_table.sql`:
+- [x] Create `V5__create_payments_table.sql`:
   - `id` UUID PK
   - `order_id` UUID NOT NULL, FK → orders(id)
   - `amount` DECIMAL(12,2) NOT NULL
@@ -91,7 +91,7 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.7 V6 — Refresh tokens table
 
-- [ ] Create `V6__create_refresh_tokens_table.sql`:
+- [x] Create `V6__create_refresh_tokens_table.sql`:
   - `id` UUID PK
   - `user_id` UUID NOT NULL, FK → users(id) ON DELETE CASCADE
   - `token` VARCHAR(512) NOT NULL UNIQUE
@@ -101,7 +101,7 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ### 4.8 V7 — Seed data
 
-- [ ] Create `V7__seed_dev_data.sql`:
+- [x] Create `V7__seed_dev_data.sql`:
   - Admin user: `admin@orderhub.com` / `admin123` (BCrypt hash: `$2a$10$...`), role=ADMIN
   - Test user: `user@orderhub.com` / `user123` (BCrypt hash: `$2a$10$...`), role=USER
   - 5 products:
@@ -114,11 +114,11 @@ Create all database tables via versioned Flyway migration scripts. This includes
 
 ## Verification
 
-- [ ] Start PostgreSQL: `docker compose up db -d`
-- [ ] Start backend: `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
-- [ ] All 7 migrations apply successfully (check logs for "Successfully applied 7 migrations")
-- [ ] Verify tables exist: connect to DB and list tables
-- [ ] Verify seed data: query users (2 rows), products (5 rows), inventory (5 rows)
+- [x] Start PostgreSQL: `docker compose up db -d`
+- [x] Start backend: `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+- [x] All 7 migrations apply successfully (check logs for "Successfully applied 7 migrations")
+- [x] Verify tables exist: connect to DB and list tables
+- [x] Verify seed data: query users (2 rows), products (5 rows), inventory (5 rows)
 
 ## Files Created
 

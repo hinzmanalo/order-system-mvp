@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: orderhub-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: orderhub
+      POSTGRES_USER: orderhub
+      POSTGRES_PASSWORD: orderhub
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orderhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: orderhub-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/orderhub
+      SPRING_DATASOURCE_USERNAME: orderhub
+      SPRING_DATASOURCE_PASSWORD: orderhub
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
