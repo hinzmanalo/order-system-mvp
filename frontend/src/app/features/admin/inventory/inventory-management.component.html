@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1>Inventory Management</h1>
+      <p class="subtitle">Manage stock levels for all products</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading">Loading inventory...</div>
+  }
+
+  <!-- Inventory Table -->
+  @if (!loading()) {
+    <div class="table-container">
+      <table class="inventory-table">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>SKU</th>
+            <th>Current Quantity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of inventory(); track item.productId) {
+            <tr>
+              <td>{{ item.productName }}</td>
+              <td>{{ item.productSku }}</td>
+              <td>
+                <span class="quantity-badge" [class.low-stock]="item.quantity < 10">
+                  {{ item.quantity }}
+                </span>
+              </td>
+              <td class="actions">
+                <!-- Set Stock -->
+                @if (isEditingStock(item.productId)) {
+                  <div class="inline-form">
+                    <input 
+                      type="number" 
+                      #setStockInput 
+                      min="0" 
+                      [value]="item.quantity"
+                      class="stock-input"
+                      placeholder="Quantity"
+                    />
+                    <button class="btn btn-success btn-sm" (click)="setStock(item.productId, setStockInput)">
+                      Save
+                    </button>
+                    <button class="btn btn-secondary btn-sm" (click)="cancelSetStock(item.productId)">
+                      Cancel
+                    </button>
+                  </div>
+                } @else {
+                  <button class="btn btn-primary btn-sm" (click)="openSetStock(item.productId)">
+                    Set Stock
+                  </button>
+                }
+
+                <!-- Adjust Stock -->
+                @if (isEditingAdjust(item.productId)) {
+                  <div class="inline-form">
+                    <input 
+                      type="number" 
+                      #adjustStockInput 
+                      value="0"
+                      class="stock-input"
+                      placeholder="+/- Amount"
+                    />
+                    <button class="btn btn-success btn-sm" (click)="adjustStock(item.productId, adjustStockInput)">
+                      Adjust
+                    </button>
+                    <button class="btn btn-secondary btn-sm" (click)="cancelAdjustStock(item.productId)">
+                      Cancel
+                    </button>
+                  </div>
+                } @else {
+                  <button class="btn btn-secondary btn-sm" (click)="openAdjustStock(item.productId)">
+                    Adjust
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty-state">No inventory items found</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    }
+  }
+</div>

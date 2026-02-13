@@ -20,7 +20,7 @@
                 <div class="product-name">{{ item.product.name }}</div>
                 <div class="item-details">
                   <span class="quantity">Qty: {{ item.quantity }}</span>
-                  <span class="unit-price">@ ${{ item.product.price.toFixed(2) }}</span>
+                  <span class="unit-price">&#64; ${{ item.product.price.toFixed(2) }}</span>
                 </div>
               </div>
               <div class="item-subtotal">
@@ -32,7 +32,7 @@
 
         <div class="summary-total">
           <span>Order Total:</span>
-          <span class="total-amount">${{ cartTotal().toFixed(2) }}</span>
+          <span class="total-amount">${{ cartTotal.toFixed(2) }}</span>
         </div>
       </div>
 

@@ -33,3 +33,13 @@ export interface RefreshRequest {
 export interface UpdateRoleRequest {
   role: string;
 }
+
+export interface UserPage {
+  content: User[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+}

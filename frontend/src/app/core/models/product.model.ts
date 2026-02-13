@@ -17,3 +17,15 @@ export interface ProductPage {
   first: boolean;
   last: boolean;
 }
+
+export interface ProductRequest {
+  name: string;
+  description?: string;
+  price: number;
+  sku: string;
+}
+
+export interface UpdateProductStatusRequest {
+  active: boolean;
+}
+

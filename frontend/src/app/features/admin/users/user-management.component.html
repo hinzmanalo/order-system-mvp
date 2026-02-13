@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1>User Management</h1>
+      <p class="subtitle">Manage user accounts and roles</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading">Loading users...</div>
+  }
+
+  <!-- Users Table -->
+  @if (!loading()) {
+    <div class="table-container">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Registered</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>{{ user.email }}</td>
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>
+                <span class="badge" [class.badge-admin]="user.role === 'ADMIN'" [class.badge-user]="user.role === 'USER'">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td>{{ formatDate(user.createdAt) }}</td>
+              <td class="actions">
+                @if (user.role === 'USER') {
+                  <button class="btn btn-primary btn-sm" (click)="promoteToAdmin(user)">
+                    Promote to Admin
+                  </button>
+                } @else {
+                  <span class="admin-label">Admin User</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-state">No users found</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    }
+  }
+</div>

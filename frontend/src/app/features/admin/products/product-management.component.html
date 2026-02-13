@@ -1,0 +1,86 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1>Product Management</h1>
+      <p class="subtitle">Create and manage your product catalog</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateForm()">Add Product</button>
+  </div>
+
+  <!-- Product Form Modal -->
+  @if (showForm()) {
+    <div class="modal-overlay" (click)="onFormCancelled()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <app-product-form 
+          [product]="editingProduct()"
+          (saved)="onFormSaved()"
+          (cancelled)="onFormCancelled()">
+        </app-product-form>
+      </div>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading">Loading products...</div>
+  }
+
+  <!-- Products Table -->
+  @if (!loading()) {
+    <div class="table-container">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>SKU</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr>
+              <td>
+                <div class="product-name">{{ product.name }}</div>
+                @if (product.description) {
+                  <div class="product-description">{{ product.description }}</div>
+                }
+              </td>
+              <td>{{ product.sku }}</td>
+              <td>${{ product.price.toFixed(2) }}</td>
+              <td>
+                <span class="badge" [class.badge-active]="product.active" [class.badge-inactive]="!product.active">
+                  {{ product.active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td class="actions">
+                <button class="btn btn-secondary btn-sm" (click)="openEditForm(product)">Edit</button>
+                <button 
+                  class="btn btn-sm"
+                  [class.btn-warning]="product.active"
+                  [class.btn-success]="!product.active"
+                  (click)="toggleProductStatus(product)">
+                  {{ product.active ? 'Deactivate' : 'Activate' }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-state">No products found</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    }
+  }
+</div>
