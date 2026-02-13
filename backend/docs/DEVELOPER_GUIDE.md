@@ -20,6 +20,7 @@ Guide for common development tasks in OrderHub backend.
 ### Step 1: Create DTO Classes
 
 **Request DTO:**
+
 ```java
 package com.orderhub.module.dto;
 
@@ -35,25 +36,26 @@ import java.math.BigDecimal;
  */
 @Data
 public class CreateProductRequest {
-    
+
     @NotBlank(message = "Product name is required")
     private String name;
-    
+
     private String description;
-    
+
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
     private BigDecimal price;
-    
+
     @NotBlank(message = "SKU is required")
     private String sku;
-    
+
     @Positive(message = "Initial stock must be positive")
     private Integer initialStock = 0;
 }
 ```
 
 **Response DTO:**
+
 ```java
 package com.orderhub.module.dto;
 
@@ -86,6 +88,7 @@ public class ProductResponse {
 ### Step 2: Add Service Method
 
 **Service Interface:**
+
 ```java
 package com.orderhub.module.service;
 
@@ -106,6 +109,7 @@ public interface ProductService {
 ```
 
 **Service Implementation:**
+
 ```java
 package com.orderhub.module.service;
 
@@ -123,26 +127,26 @@ import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
-    
+
     private final ProductRepository productRepository;
-    
+
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    
+
     @Override
     @Transactional
     public ProductResponse createProduct(CreateProductRequest request) {
         logger.info("Creating product with SKU: {}", request.getSku());
-        
+
         // Validate SKU uniqueness
         if (productRepository.existsBySku(request.getSku())) {
             logger.warn("Attempt to create product with duplicate SKU: {}", request.getSku());
             throw new DuplicateResourceException("Product with SKU " + request.getSku() + " already exists");
         }
-        
+
         // Create entity
         Product product = new Product();
         product.setName(request.getName());
@@ -150,16 +154,16 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(request.getPrice());
         product.setSku(request.getSku());
         product.setActive(true);
-        
+
         // Save to database
         Product saved = productRepository.save(product);
-        
+
         logger.info("Product created successfully with ID: {}", saved.getId());
-        
+
         // Map to response DTO
         return mapToResponse(saved);
     }
-    
+
     private ProductResponse mapToResponse(Product product) {
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
@@ -201,15 +205,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin/products")
 @Tag(name = "Admin - Products", description = "Product management endpoints")
 public class AdminProductController {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(AdminProductController.class);
-    
+
     private final ProductService productService;
-    
+
     public AdminProductController(ProductService productService) {
         this.productService = productService;
     }
-    
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create product", description = "Creates a new product with initial inventory")
@@ -220,9 +224,9 @@ public class AdminProductController {
     })
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody CreateProductRequest request) {
         logger.info("POST /api/v1/admin/products - Creating product: {}", request.getName());
-        
+
         ProductResponse response = productService.createProduct(request);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
@@ -241,6 +245,7 @@ V8__add_product_category.sql
 ```
 
 **Naming convention:** `V{version}__{description}.sql`
+
 - Version must be incremental (V1, V2, V3...)
 - Double underscore before description
 - Use snake_case for description
@@ -296,6 +301,7 @@ mvn flyway:info
 ### Migration Best Practices
 
 ✅ **DO:**
+
 - Always include rollback plan
 - Test migrations on copy of production data
 - Use transactions for data migrations
@@ -303,6 +309,7 @@ mvn flyway:info
 - Document complex migrations
 
 ❌ **DON'T:**
+
 - Never modify applied migrations
 - Don't use database-specific syntax without fallback
 - Avoid massive data migrations in DDL scripts
@@ -319,29 +326,29 @@ import jakarta.validation.constraints.*;
 public class ExampleRequest {
     @NotNull(message = "Field cannot be null")
     private String field1;
-    
+
     @NotBlank(message = "Field cannot be empty")
     private String field2;
-    
+
     @Email(message = "Must be valid email")
     private String email;
-    
+
     @Size(min = 8, max = 100, message = "Must be between 8 and 100 characters")
     private String password;
-    
+
     @Positive(message = "Must be positive number")
     private BigDecimal price;
-    
+
     @Min(value = 0, message = "Minimum value is 0")
     @Max(value = 100, message = "Maximum value is 100")
     private Integer quantity;
-    
+
     @Pattern(regexp = "^[A-Z0-9-]+$", message = "SKU must contain only uppercase letters, numbers, and hyphens")
     private String sku;
-    
+
     @Past(message = "Date must be in the past")
     private LocalDate birthDate;
-    
+
     @Future(message = "Date must be in the future")
     private LocalDateTime deliveryDate;
 }
@@ -350,6 +357,7 @@ public class ExampleRequest {
 ### Custom Validator
 
 **Step 1: Create Annotation**
+
 ```java
 package com.orderhub.common.validation;
 
@@ -370,6 +378,7 @@ public @interface UniqueEmail {
 ```
 
 **Step 2: Implement Validator**
+
 ```java
 package com.orderhub.common.validation;
 
@@ -380,13 +389,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
-    
+
     private final UserRepository userRepository;
-    
+
     public UniqueEmailValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
+
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
         if (email == null) {
@@ -398,6 +407,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 ```
 
 **Step 3: Use Annotation**
+
 ```java
 public class RegisterRequest {
     @UniqueEmail
@@ -416,13 +426,13 @@ public class RegisterRequest {
 ```java
 @Service
 public class OrderServiceImpl implements OrderService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
-    
+
     private final OrderRepository orderRepository;
     private final InventoryService inventoryService;
     private final ProductService productService;
-    
+
     // Constructor injection (recommended)
     public OrderServiceImpl(
             OrderRepository orderRepository,
@@ -432,37 +442,37 @@ public class OrderServiceImpl implements OrderService {
         this.inventoryService = inventoryService;
         this.productService = productService;
     }
-    
+
     @Override
     @Transactional // CRITICAL: Ensures atomicity
     public OrderResponse createOrder(UUID userId, CreateOrderRequest request) {
         logger.info("Creating order for user {} with {} items", userId, request.getItems().size());
-        
+
         // 1. Validate all products exist and are active
         validateProducts(request);
-        
+
         // 2. Check and reserve inventory
         reserveInventory(request);
-        
+
         // 3. Create order
         Order order = buildOrder(userId, request);
         Order saved = orderRepository.save(order);
-        
+
         logger.info("Order created successfully: {}", saved.getId());
-        
+
         return mapToResponse(saved);
     }
-    
+
     private void validateProducts(CreateOrderRequest request) {
         for (OrderItemRequest item : request.getItems()) {
             ProductResponse product = productService.getProductById(item.getProductId());
-            
+
             if (!product.getActive()) {
                 throw new BusinessRuleException("Product " + product.getName() + " is not active");
             }
         }
     }
-    
+
     private void reserveInventory(CreateOrderRequest request) {
         for (OrderItemRequest item : request.getItems()) {
             try {
@@ -482,11 +492,13 @@ public class OrderServiceImpl implements OrderService {
 ### Transaction Management
 
 **Use `@Transactional` for:**
+
 - Operations that modify database
 - Multiple database operations that must succeed/fail together
 - Operations requiring read-write consistency
 
 **Don't use `@Transactional` for:**
+
 - Read-only operations (use `@Transactional(readOnly = true)` instead)
 - Operations with external API calls (transaction timeout)
 
@@ -519,13 +531,13 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
-    
+
     @Mock
     private ProductRepository productRepository;
-    
+
     @InjectMocks
     private ProductServiceImpl productService;
-    
+
     @Test
     void createProduct_Success() {
         // Given
@@ -533,37 +545,37 @@ class ProductServiceImplTest {
         request.setName("Test Product");
         request.setSku("TEST-001");
         request.setPrice(BigDecimal.valueOf(99.99));
-        
+
         Product savedProduct = new Product();
         savedProduct.setId(UUID.randomUUID());
         savedProduct.setName(request.getName());
         savedProduct.setSku(request.getSku());
-        
+
         when(productRepository.existsBySku(request.getSku())).thenReturn(false);
         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
-        
+
         // When
         ProductResponse response = productService.createProduct(request);
-        
+
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getName()).isEqualTo("Test Product");
         verify(productRepository).save(any(Product.class));
     }
-    
+
     @Test
     void createProduct_DuplicateSku_ThrowsException() {
         // Given
         CreateProductRequest request = new CreateProductRequest();
         request.setSku("DUPLICATE-SKU");
-        
+
         when(productRepository.existsBySku("DUPLICATE-SKU")).thenReturn(true);
-        
+
         // When/Then
         assertThatThrownBy(() -> productService.createProduct(request))
             .isInstanceOf(DuplicateResourceException.class)
             .hasMessageContaining("already exists");
-        
+
         verify(productRepository, never()).save(any());
     }
 }
@@ -593,10 +605,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional // Rollback after each test
 class AdminProductControllerIntegrationTest {
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Test
     @WithMockUser(roles = "ADMIN")
     void createProduct_Success() throws Exception {
@@ -609,7 +621,7 @@ class AdminProductControllerIntegrationTest {
                 "initialStock": 50
             }
             """;
-        
+
         mockMvc.perform(post("/api/v1/admin/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
@@ -618,7 +630,7 @@ class AdminProductControllerIntegrationTest {
             .andExpect(jsonPath("$.name").value("Integration Test Product"))
             .andExpect(jsonPath("$.sku").value("INT-TEST-001"));
     }
-    
+
     @Test
     @WithMockUser(roles = "USER") // Wrong role
     void createProduct_Forbidden() throws Exception {
@@ -643,11 +655,11 @@ package com.orderhub.common.exception;
  * Exception thrown when insufficient inventory is available.
  */
 public class InsufficientStockException extends RuntimeException {
-    
+
     private final UUID productId;
     private final Integer requested;
     private final Integer available;
-    
+
     public InsufficientStockException(UUID productId, Integer requested, Integer available) {
         super(String.format("Insufficient stock for product %s. Requested: %d, Available: %d",
             productId, requested, available));
@@ -655,7 +667,7 @@ public class InsufficientStockException extends RuntimeException {
         this.requested = requested;
         this.available = available;
     }
-    
+
     // Getters
     public UUID getProductId() { return productId; }
     public Integer getRequested() { return requested; }
@@ -679,13 +691,13 @@ import java.time.Instant;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    
+
     @ExceptionHandler(InsufficientStockException.class)
     public ProblemDetail handleInsufficientStock(InsufficientStockException ex) {
         logger.warn("Insufficient stock: {}", ex.getMessage());
-        
+
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
             HttpStatus.CONFLICT,
             ex.getMessage()
@@ -696,7 +708,7 @@ public class GlobalExceptionHandler {
         problem.setProperty("productId", ex.getProductId());
         problem.setProperty("requested", ex.getRequested());
         problem.setProperty("available", ex.getAvailable());
-        
+
         return problem;
     }
 }
@@ -739,6 +751,7 @@ logger.error("Failed to process payment for order {}", orderId, exception);
 ### Best Practices
 
 ✅ **DO:**
+
 ```java
 // Use parameterized logging
 logger.info("User {} logged in at {}", userId, timestamp);
@@ -751,6 +764,7 @@ logger.info("Order created: orderId={}, userId={}, total={}", orderId, userId, t
 ```
 
 ❌ **DON'T:**
+
 ```java
 // String concatenation (performance hit)
 logger.info("User " + userId + " logged in"); // BAD
@@ -772,15 +786,15 @@ logger.info("Order created"); // Not enough context
 @Entity
 @Table(name = "inventory")
 public class Inventory {
-    
+
     @Id
     private UUID productId;
-    
+
     private Integer quantity;
-    
+
     @Version // Enables optimistic locking
     private Long version;
-    
+
     // Other fields...
 }
 ```
@@ -790,20 +804,20 @@ public class Inventory {
 ```java
 @Service
 public class InventoryServiceImpl implements InventoryService {
-    
+
     @Transactional
     public InventoryResponse updateQuantity(UUID productId, Integer newQuantity, Long version) {
         Inventory inventory = inventoryRepository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
-        
+
         // Version mismatch throws OptimisticLockException
         if (!inventory.getVersion().equals(version)) {
             throw new OptimisticLockException("Inventory was modified by another transaction");
         }
-        
+
         inventory.setQuantity(newQuantity);
         Inventory saved = inventoryRepository.save(inventory);
-        
+
         return mapToResponse(saved);
     }
 }
@@ -816,17 +830,17 @@ public class InventoryServiceImpl implements InventoryService {
 public void updateInventoryWithRetry(UUID productId, Integer quantity) {
     int maxRetries = 3;
     int attempt = 0;
-    
+
     while (attempt < maxRetries) {
         try {
             // 1. Get current state
             InventoryResponse current = inventoryService.getInventory(productId);
-            
+
             // 2. Update with version
             inventoryService.updateQuantity(productId, quantity, current.getVersion());
-            
+
             return; // Success
-            
+
         } catch (OptimisticLockException e) {
             attempt++;
             if (attempt >= maxRetries) {
@@ -877,21 +891,21 @@ public record ProductResponse(
 
 ```java
 public interface ProductRepository extends JpaRepository<Product, UUID> {
-    
+
     // Spring generates query from method name
     boolean existsBySku(String sku);
-    
+
     Optional<Product> findBySku(String sku);
-    
+
     List<Product> findByActiveTrue();
-    
+
     // Custom JPQL query
     @Query("SELECT p FROM Product p WHERE p.active = true AND p.price BETWEEN :min AND :max")
     List<Product> findActiveProductsInPriceRange(
         @Param("min") BigDecimal minPrice,
         @Param("max") BigDecimal maxPrice
     );
-    
+
     // Native SQL query
     @Query(value = "SELECT * FROM products WHERE name ILIKE %:search%", nativeQuery = true)
     List<Product> searchByName(@Param("search") String searchTerm);

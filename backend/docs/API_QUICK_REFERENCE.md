@@ -11,6 +11,7 @@ http://localhost:8080/api/v1
 ## Authentication
 
 ### Register
+
 ```bash
 POST /auth/register
 {
@@ -22,6 +23,7 @@ POST /auth/register
 ```
 
 ### Login
+
 ```bash
 POST /auth/login
 {
@@ -32,6 +34,7 @@ POST /auth/login
 ```
 
 ### Refresh Token
+
 ```bash
 POST /auth/refresh
 {
@@ -41,6 +44,7 @@ POST /auth/refresh
 ```
 
 ### Get Current User
+
 ```bash
 GET /auth/me
 Authorization: Bearer {accessToken}
@@ -48,6 +52,7 @@ Authorization: Bearer {accessToken}
 ```
 
 ### Logout
+
 ```bash
 POST /auth/logout
 Authorization: Bearer {accessToken}
@@ -57,6 +62,7 @@ Authorization: Bearer {accessToken}
 ## Products (Public)
 
 ### List Products
+
 ```bash
 GET /products?page=0&size=20&sort=name,asc
 # Optional: &name=headphones&minPrice=50&maxPrice=500
@@ -64,6 +70,7 @@ GET /products?page=0&size=20&sort=name,asc
 ```
 
 ### Get Product
+
 ```bash
 GET /products/{productId}
 # → 200 OK + ProductResponse
@@ -72,6 +79,7 @@ GET /products/{productId}
 ## Orders (Authenticated)
 
 ### Create Order
+
 ```bash
 POST /orders
 Authorization: Bearer {accessToken}
@@ -84,6 +92,7 @@ Authorization: Bearer {accessToken}
 ```
 
 ### List My Orders
+
 ```bash
 GET /orders?page=0&size=10
 Authorization: Bearer {accessToken}
@@ -92,6 +101,7 @@ Authorization: Bearer {accessToken}
 ```
 
 ### Get Order
+
 ```bash
 GET /orders/{orderId}
 Authorization: Bearer {accessToken}
@@ -99,6 +109,7 @@ Authorization: Bearer {accessToken}
 ```
 
 ### Cancel Order
+
 ```bash
 POST /orders/{orderId}/cancel
 Authorization: Bearer {accessToken}
@@ -108,6 +119,7 @@ Authorization: Bearer {accessToken}
 ## Admin - Users
 
 ### List All Users
+
 ```bash
 GET /admin/users?page=0&size=20
 Authorization: Bearer {adminToken}
@@ -115,6 +127,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Get User
+
 ```bash
 GET /admin/users/{userId}
 Authorization: Bearer {adminToken}
@@ -122,6 +135,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Update User Role
+
 ```bash
 PUT /admin/users/{userId}/role
 Authorization: Bearer {adminToken}
@@ -134,6 +148,7 @@ Authorization: Bearer {adminToken}
 ## Admin - Products
 
 ### Create Product
+
 ```bash
 POST /admin/products
 Authorization: Bearer {adminToken}
@@ -148,6 +163,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Update Product
+
 ```bash
 PUT /admin/products/{productId}
 Authorization: Bearer {adminToken}
@@ -161,6 +177,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Delete Product
+
 ```bash
 DELETE /admin/products/{productId}
 Authorization: Bearer {adminToken}
@@ -170,6 +187,7 @@ Authorization: Bearer {adminToken}
 ## Admin - Inventory
 
 ### Get Inventory
+
 ```bash
 GET /admin/inventory/{productId}
 Authorization: Bearer {adminToken}
@@ -177,6 +195,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Update Inventory
+
 ```bash
 PUT /admin/inventory/{productId}
 Authorization: Bearer {adminToken}
@@ -188,6 +207,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Adjust Inventory
+
 ```bash
 POST /admin/inventory/{productId}/adjust
 Authorization: Bearer {adminToken}
@@ -201,6 +221,7 @@ Authorization: Bearer {adminToken}
 ## Admin - Orders
 
 ### List All Orders
+
 ```bash
 GET /admin/orders?page=0&size=20
 Authorization: Bearer {adminToken}
@@ -209,6 +230,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Get Order
+
 ```bash
 GET /admin/orders/{orderId}
 Authorization: Bearer {adminToken}
@@ -216,6 +238,7 @@ Authorization: Bearer {adminToken}
 ```
 
 ### Update Order Status
+
 ```bash
 PUT /admin/orders/{orderId}/status
 Authorization: Bearer {adminToken}
@@ -227,17 +250,17 @@ Authorization: Bearer {adminToken}
 
 ## Common Response Codes
 
-| Code | Meaning |
-|------|---------|
-| 200 | Success |
-| 201 | Created |
-| 204 | No Content (success, no body) |
-| 400 | Bad Request (validation error) |
-| 401 | Unauthorized (missing/invalid token) |
-| 403 | Forbidden (insufficient permissions) |
-| 404 | Not Found |
-| 409 | Conflict (optimistic lock, business rule) |
-| 500 | Internal Server Error |
+| Code | Meaning                                   |
+| ---- | ----------------------------------------- |
+| 200  | Success                                   |
+| 201  | Created                                   |
+| 204  | No Content (success, no body)             |
+| 400  | Bad Request (validation error)            |
+| 401  | Unauthorized (missing/invalid token)      |
+| 403  | Forbidden (insufficient permissions)      |
+| 404  | Not Found                                 |
+| 409  | Conflict (optimistic lock, business rule) |
+| 500  | Internal Server Error                     |
 
 ## Error Response Format
 
@@ -297,13 +320,14 @@ curl http://localhost:8080/api/v1/orders \
 
 ## Pagination Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `page` | integer | 0 | Page number (0-indexed) |
-| `size` | integer | 20 | Items per page (max 100) |
-| `sort` | string | varies | `field,direction` (e.g., `price,desc`) |
+| Parameter | Type    | Default | Description                            |
+| --------- | ------- | ------- | -------------------------------------- |
+| `page`    | integer | 0       | Page number (0-indexed)                |
+| `size`    | integer | 20      | Items per page (max 100)               |
+| `sort`    | string  | varies  | `field,direction` (e.g., `price,desc`) |
 
 **Example:**
+
 ```bash
 GET /products?page=2&size=50&sort=price,asc&sort=name,desc
 ```
@@ -311,6 +335,7 @@ GET /products?page=2&size=50&sort=price,asc&sort=name,desc
 ## Swagger UI
 
 Interactive API testing:
+
 ```
 http://localhost:8080/swagger-ui.html
 ```

@@ -21,12 +21,14 @@ Production deployment guide for OrderHub backend.
 ### System Requirements
 
 **Minimum:**
+
 - CPU: 2 cores
 - RAM: 2 GB
 - Disk: 10 GB
 - OS: Linux, macOS, or Windows with WSL2
 
 **Recommended (Production):**
+
 - CPU: 4+ cores
 - RAM: 4+ GB
 - Disk: 50+ GB SSD
@@ -98,6 +100,7 @@ java -jar target/orderhub-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ### Build Docker Image
 
 **Dockerfile** (already provided):
+
 ```dockerfile
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
@@ -113,6 +116,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
 **Build image:**
+
 ```bash
 # From project root
 docker build -t orderhub-backend:latest ./backend
@@ -124,8 +128,9 @@ docker tag orderhub-backend:latest registry.example.com/orderhub-backend:v1.0.0
 ### Run with Docker Compose
 
 **Production docker-compose.yml:**
+
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -163,7 +168,8 @@ services:
     ports:
       - "8080:8080"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -174,6 +180,7 @@ volumes:
 ```
 
 **Start services:**
+
 ```bash
 # Set environment variables
 export DB_PASSWORD="secure-db-password-here"
@@ -257,6 +264,7 @@ GRANT ALL ON SCHEMA public TO orderhub_app;
 Migrations run automatically on application startup via Flyway.
 
 **Manual migration (if needed):**
+
 ```bash
 # Using Maven
 mvn flyway:migrate -Dflyway.url=jdbc:postgresql://localhost:5432/orderhub \
@@ -270,6 +278,7 @@ mvn flyway:info
 ### Database Tuning
 
 **postgresql.conf optimizations:**
+
 ```conf
 # Connection settings
 max_connections = 100
@@ -298,25 +307,26 @@ log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
 
 ### Required Variables
 
-| Variable | Example | Description |
-|----------|---------|-------------|
-| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://db:5432/orderhub` | Database connection URL |
-| `SPRING_DATASOURCE_USERNAME` | `orderhub_app` | Database username |
-| `SPRING_DATASOURCE_PASSWORD` | `***` | Database password |
-| `JWT_SECRET` | `***` | JWT signing secret (min 256 bits) |
+| Variable                     | Example                              | Description                       |
+| ---------------------------- | ------------------------------------ | --------------------------------- |
+| `SPRING_DATASOURCE_URL`      | `jdbc:postgresql://db:5432/orderhub` | Database connection URL           |
+| `SPRING_DATASOURCE_USERNAME` | `orderhub_app`                       | Database username                 |
+| `SPRING_DATASOURCE_PASSWORD` | `***`                                | Database password                 |
+| `JWT_SECRET`                 | `***`                                | JWT signing secret (min 256 bits) |
 
 ### Optional Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SPRING_PROFILES_ACTIVE` | `dev` | Active profile (dev, test, prod) |
-| `SERVER_PORT` | `8080` | Application port |
-| `APP_JWT_ACCESS_TOKEN_VALIDITY_MS` | `900000` | Access token lifetime (15 min) |
-| `APP_JWT_REFRESH_TOKEN_VALIDITY_HOURS` | `168` | Refresh token lifetime (7 days) |
+| Variable                               | Default  | Description                      |
+| -------------------------------------- | -------- | -------------------------------- |
+| `SPRING_PROFILES_ACTIVE`               | `dev`    | Active profile (dev, test, prod) |
+| `SERVER_PORT`                          | `8080`   | Application port                 |
+| `APP_JWT_ACCESS_TOKEN_VALIDITY_MS`     | `900000` | Access token lifetime (15 min)   |
+| `APP_JWT_REFRESH_TOKEN_VALIDITY_HOURS` | `168`    | Refresh token lifetime (7 days)  |
 
 ### Production Configuration File
 
 **application-prod.yml:**
+
 ```yaml
 server:
   port: 8080
@@ -336,7 +346,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-  
+
   jpa:
     show-sql: false
     hibernate:
@@ -348,7 +358,7 @@ spring:
           batch_size: 20
         order_inserts: true
         order_updates: true
-  
+
   flyway:
     enabled: true
     validate-on-migrate: true
@@ -358,7 +368,7 @@ logging:
     root: INFO
     com.orderhub: INFO
   pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
   file:
     name: /var/log/orderhub/application.log
     max-size: 10MB
@@ -413,6 +423,7 @@ docker exec orderhub-db psql -U orderhub -c "SELECT 1;"
 ### Load Balancer Health
 
 Configure load balancer to poll:
+
 ```
 GET /actuator/health
 Expected: 200 OK
@@ -428,6 +439,7 @@ Unhealthy threshold: 3
 ### Application Metrics
 
 **Prometheus metrics:**
+
 ```bash
 # Metrics endpoint
 curl http://localhost:8080/actuator/metrics
@@ -437,12 +449,13 @@ curl http://localhost:8080/actuator/metrics/jvm.memory.used
 ```
 
 **Prometheus scrape config:**
+
 ```yaml
 scrape_configs:
-  - job_name: 'orderhub-backend'
-    metrics_path: '/actuator/prometheus'
+  - job_name: "orderhub-backend"
+    metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ['backend:8080']
+      - targets: ["backend:8080"]
 ```
 
 ### Centralized Logging
@@ -452,20 +465,21 @@ scrape_configs:
 ```yaml
 # logback-spring.xml
 <configuration>
-  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-    <destination>logstash:5000</destination>
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-  </appender>
-  
-  <root level="INFO">
-    <appender-ref ref="LOGSTASH" />
-  </root>
+<appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+<destination>logstash:5000</destination>
+<encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+</appender>
+
+<root level="INFO">
+<appender-ref ref="LOGSTASH" />
+</root>
 </configuration>
 ```
 
 ### Alert Rules
 
 **Prometheus alert rules:**
+
 ```yaml
 groups:
   - name: orderhub_alerts
@@ -475,13 +489,13 @@ groups:
         for: 5m
         annotations:
           summary: "High error rate detected"
-      
+
       - alert: HighMemoryUsage
         expr: jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"} > 0.9
         for: 10m
         annotations:
           summary: "Memory usage above 90%"
-      
+
       - alert: DatabaseConnectionPoolExhausted
         expr: hikaricp_connections_active >= hikaricp_connections_max
         for: 2m
@@ -496,6 +510,7 @@ groups:
 ### Database Backup
 
 **Automated backup script:**
+
 ```bash
 #!/bin/bash
 # backup-db.sh
@@ -517,6 +532,7 @@ echo "Backup completed: $BACKUP_FILE.gz"
 ```
 
 **Schedule with cron:**
+
 ```bash
 # Daily backup at 2 AM
 0 2 * * * /path/to/backup-db.sh >> /var/log/orderhub-backup.log 2>&1
@@ -539,6 +555,7 @@ docker compose start backend
 ### Disaster Recovery
 
 **Full system restore:**
+
 1. Deploy fresh infrastructure
 2. Restore database from latest backup
 3. Update environment variables
@@ -556,6 +573,7 @@ docker compose start backend
 ### Horizontal Scaling
 
 **Load balancer (Nginx):**
+
 ```nginx
 upstream orderhub_backend {
     least_conn;
@@ -576,6 +594,7 @@ server {
 ```
 
 **Docker Compose scale:**
+
 ```bash
 # Scale to 3 instances
 docker compose up -d --scale backend=3
@@ -584,6 +603,7 @@ docker compose up -d --scale backend=3
 ### Database Scaling
 
 **Read replicas:**
+
 ```yaml
 # application-prod.yml
 spring:
@@ -597,6 +617,7 @@ spring:
 ```
 
 **Connection pooling:**
+
 ```yaml
 spring:
   datasource:
@@ -608,6 +629,7 @@ spring:
 ### Performance Tuning
 
 **JVM options:**
+
 ```bash
 java -jar \
   -Xms512m \
@@ -620,6 +642,7 @@ java -jar \
 ```
 
 **Application properties:**
+
 ```yaml
 spring:
   jpa:

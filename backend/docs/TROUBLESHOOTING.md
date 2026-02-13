@@ -21,6 +21,7 @@ Common issues and solutions for OrderHub backend.
 #### Error: "Port 8080 is already in use"
 
 **Symptoms:**
+
 ```
 ***************************
 APPLICATION FAILED TO START
@@ -34,6 +35,7 @@ Web server failed to start. Port 8080 was already in use.
 **Cause:** Another process is using port 8080
 
 **Solutions:**
+
 ```bash
 # 1. Find process using port
 lsof -i :8080
@@ -54,6 +56,7 @@ services:
 #### Error: "Failed to configure a DataSource"
 
 **Symptoms:**
+
 ```
 ***************************
 APPLICATION FAILED TO START
@@ -67,6 +70,7 @@ Failed to configure a DataSource: 'url' attribute is not specified
 **Cause:** Database connection not configured or PostgreSQL not running
 
 **Solutions:**
+
 ```bash
 # 1. Check if database is running
 docker compose ps
@@ -89,6 +93,7 @@ spring:
 #### Error: Application starts but crashes immediately
 
 **Symptoms:**
+
 ```
 Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 ```
@@ -96,6 +101,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 **Cause:** Insufficient JVM memory
 
 **Solutions:**
+
 ```bash
 # Increase heap size
 java -jar -Xms512m -Xmx2048m orderhub.jar
@@ -115,8 +121,9 @@ docker compose up --scale backend=1 --memory="2g"
 ### Migration Checksum Mismatch
 
 **Symptoms:**
+
 ```
-FlywayException: Validate failed: 
+FlywayException: Validate failed:
 Migration checksum mismatch for migration version V1
 Expected: 123456789
 Actual:   987654321
@@ -127,6 +134,7 @@ Actual:   987654321
 **Solutions:**
 
 **Development (Reset database):**
+
 ```bash
 # Stop containers
 docker compose down
@@ -139,19 +147,21 @@ docker compose up -d
 ```
 
 **Production (Repair):**
+
 ```bash
 # Repair checksums
 mvn flyway:repair
 
 # Or manually in database
-UPDATE flyway_schema_history 
-SET checksum = {actual-checksum} 
+UPDATE flyway_schema_history
+SET checksum = {actual-checksum}
 WHERE version = 'V1';
 ```
 
 ### Cannot connect to PostgreSQL
 
 **Symptoms:**
+
 ```
 org.postgresql.util.PSQLException: Connection refused
 ```
@@ -159,6 +169,7 @@ org.postgresql.util.PSQLException: Connection refused
 **Cause:** PostgreSQL not running or wrong connection details
 
 **Solutions:**
+
 ```bash
 # 1. Check if PostgreSQL is running
 docker compose ps db
@@ -179,6 +190,7 @@ docker compose restart db
 ### Too Many Database Connections
 
 **Symptoms:**
+
 ```
 PSQLException: FATAL: sorry, too many clients already
 ```
@@ -186,6 +198,7 @@ PSQLException: FATAL: sorry, too many clients already
 **Cause:** Connection pool exhausted or connections not being closed
 
 **Solutions:**
+
 ```bash
 # 1. Check active connections
 docker exec orderhub-db psql -U orderhub -c \
@@ -210,10 +223,12 @@ spring:
 ### Slow Queries
 
 **Symptoms:**
+
 - API responses taking several seconds
 - Database CPU usage high
 
 **Solutions:**
+
 ```bash
 # 1. Enable query logging
 docker exec orderhub-db psql -U postgres -c \
@@ -228,7 +243,7 @@ docker logs orderhub-db 2>&1 | grep "duration:"
 
 # 4. Create missing indexes
 # Example: Add index on frequently queried column
-CREATE INDEX idx_orders_user_id_created_at 
+CREATE INDEX idx_orders_user_id_created_at
 ON orders(user_id, created_at DESC);
 
 # 5. Analyze query performance
@@ -242,6 +257,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 'uuid';
 ### JWT Token Expired
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/unauthorized",
@@ -254,6 +270,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 'uuid';
 **Cause:** Access token validity is 15 minutes
 
 **Solution:**
+
 ```bash
 # Use refresh token to get new access token
 curl -X POST http://localhost:8080/api/v1/auth/refresh \
@@ -268,6 +285,7 @@ curl -X POST http://localhost:8080/api/v1/auth/refresh \
 ### Invalid JWT Signature
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/unauthorized",
@@ -280,6 +298,7 @@ curl -X POST http://localhost:8080/api/v1/auth/refresh \
 **Cause:** JWT_SECRET mismatch or token tampered with
 
 **Solutions:**
+
 ```bash
 # 1. Check JWT_SECRET is consistent
 echo $JWT_SECRET
@@ -300,6 +319,7 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
 ### 403 Forbidden
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/forbidden",
@@ -312,6 +332,7 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
 **Cause:** User doesn't have required role (e.g., trying to access admin endpoint as regular user)
 
 **Solution:**
+
 ```bash
 # Check user role
 curl http://localhost:8080/api/v1/auth/me \
@@ -334,6 +355,7 @@ curl -X PUT http://localhost:8080/api/v1/admin/users/{userId}/role \
 ### Password Doesn't Match
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/unauthorized",
@@ -346,6 +368,7 @@ curl -X PUT http://localhost:8080/api/v1/admin/users/{userId}/role \
 **Cause:** Wrong password or user doesn't exist
 
 **Solutions:**
+
 ```bash
 # 1. Verify email is correct
 # 2. Check password requirements (min 8 chars)
@@ -363,6 +386,7 @@ docker exec orderhub-db psql -U orderhub orderhub -c \
 ### 400 Bad Request - Validation Error
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/validation",
@@ -379,6 +403,7 @@ docker exec orderhub-db psql -U orderhub orderhub -c \
 **Cause:** Request body doesn't meet validation constraints
 
 **Solution:**
+
 ```bash
 # Check API documentation for required fields
 # Example: Creating product requires all fields
@@ -398,6 +423,7 @@ curl -X POST http://localhost:8080/api/v1/admin/products \
 ### 404 Not Found
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/not-found",
@@ -410,6 +436,7 @@ curl -X POST http://localhost:8080/api/v1/admin/products \
 **Cause:** Resource doesn't exist or ID is incorrect
 
 **Solutions:**
+
 ```bash
 # 1. Verify resource ID is correct (must be valid UUID)
 # Bad: "123"
@@ -424,6 +451,7 @@ curl http://localhost:8080/api/v1/products
 ### 409 Conflict - Optimistic Lock Exception
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/optimistic-lock",
@@ -436,6 +464,7 @@ curl http://localhost:8080/api/v1/products
 **Cause:** Resource was updated by another request between your read and write
 
 **Solution:**
+
 ```bash
 # 1. Get fresh data
 curl http://localhost:8080/api/v1/admin/inventory/{productId} \
@@ -461,6 +490,7 @@ curl -X PUT http://localhost:8080/api/v1/admin/inventory/{productId} \
 ### 409 Conflict - Insufficient Stock
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/insufficient-stock",
@@ -473,6 +503,7 @@ curl -X PUT http://localhost:8080/api/v1/admin/inventory/{productId} \
 **Cause:** Order quantity exceeds available inventory
 
 **Solutions:**
+
 ```bash
 # 1. Check current stock
 curl http://localhost:8080/api/v1/products/{productId}
@@ -503,6 +534,7 @@ curl -X PUT http://localhost:8080/api/v1/admin/inventory/{productId} \
 ### 500 Internal Server Error
 
 **Symptoms:**
+
 ```json
 {
   "type": "https://orderhub.com/errors/internal",
@@ -515,6 +547,7 @@ curl -X PUT http://localhost:8080/api/v1/admin/inventory/{productId} \
 **Cause:** Unexpected application error
 
 **Solutions:**
+
 ```bash
 # 1. Check application logs
 docker compose logs backend | tail -50
@@ -543,10 +576,12 @@ docker compose restart backend
 ### Slow API Responses
 
 **Symptoms:**
+
 - Requests taking multiple seconds
 - Timeouts
 
 **Diagnosis:**
+
 ```bash
 # 1. Check application metrics
 curl http://localhost:8080/actuator/metrics/http.server.requests
@@ -563,6 +598,7 @@ spring:
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Add database indexes
 CREATE INDEX idx_orders_user_id ON orders(user_id);
@@ -588,11 +624,13 @@ server:
 ### High Memory Usage
 
 **Symptoms:**
+
 ```
 java.lang.OutOfMemoryError: Java heap space
 ```
 
 **Diagnosis:**
+
 ```bash
 # 1. Check memory usage
 docker stats orderhub-backend
@@ -605,6 +643,7 @@ docker cp orderhub-backend:/tmp/heap.hprof ./
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Increase heap size
 java -jar -Xms1g -Xmx2g orderhub.jar
@@ -628,10 +667,12 @@ services:
 ### High CPU Usage
 
 **Symptoms:**
+
 - CPU constantly at 100%
 - Application unresponsive
 
 **Diagnosis:**
+
 ```bash
 # 1. Check CPU usage
 docker stats orderhub-backend
@@ -644,6 +685,7 @@ grep "RUNNABLE" threads.txt -A 2
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Check for infinite loops in code
 # 2. Review database query performance
@@ -661,11 +703,13 @@ java -jar -XX:+UseG1GC -XX:MaxGCPauseMillis=200 orderhub.jar
 ### Docker Compose Won't Start
 
 **Symptoms:**
+
 ```
 ERROR: Version in "./docker-compose.yml" is unsupported
 ```
 
 **Solution:**
+
 ```bash
 # Update Docker Compose
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
@@ -679,6 +723,7 @@ docker compose version
 ### Container Keeps Restarting
 
 **Symptoms:**
+
 ```bash
 $ docker compose ps
 NAME                STATUS
@@ -686,6 +731,7 @@ orderhub-backend    Restarting (1) 5 seconds ago
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check logs
 docker compose logs backend
@@ -695,6 +741,7 @@ docker inspect orderhub-backend --format='{{.State.ExitCode}}'
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Fix configuration errors in docker-compose.yml
 # 2. Ensure database is healthy before backend starts
@@ -711,11 +758,13 @@ docker compose config
 ### Cannot Remove Container - Volume in Use
 
 **Symptoms:**
+
 ```
 Error response from daemon: remove orderhub-backend: volume is in use
 ```
 
 **Solution:**
+
 ```bash
 # Stop all containers first
 docker compose down
@@ -734,11 +783,13 @@ docker volume rm orderhub_postgres_data
 ### Maven Build Fails
 
 **Symptoms:**
+
 ```
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Clean and rebuild
 mvn clean install
@@ -760,11 +811,13 @@ mvn clean install
 ### Tests Failing
 
 **Symptoms:**
+
 ```
 [ERROR] Tests run: 10, Failures: 2, Errors: 1, Skipped: 0
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Run specific test
 mvn test -Dtest=OrderServiceTest
@@ -785,10 +838,12 @@ mvn clean test
 ### Hot Reload Not Working
 
 **Symptoms:**
+
 - Code changes not reflected
 - Need to restart manually
 
 **Solution:**
+
 ```bash
 # 1. Add Spring DevTools to pom.xml
 <dependency>
@@ -808,10 +863,12 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ### IDE Not Recognizing Lombok
 
 **Symptoms:**
+
 - Compilation errors on getters/setters
 - Red underlines in IDE
 
 **Solution:**
+
 ```bash
 # IntelliJ IDEA:
 # 1. Install Lombok plugin

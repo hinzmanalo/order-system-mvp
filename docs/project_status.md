@@ -46,12 +46,12 @@ Progress: [███████████░░░░░░░░] 56%
 
 ### Wave 4 — Backend Domain Modules (sequential)
 
-| #   | Feature                                            | Status      | Dependencies | Notes                                          |
-| --- | -------------------------------------------------- | ----------- | ------------ | ---------------------------------------------- |
-| 07  | [Catalog Backend](plans/07-catalog-backend.md)     | ✅ Complete | 05, 06       | Product CRUD, pagination, filtering            |
+| #   | Feature                                            | Status      | Dependencies | Notes                                                   |
+| --- | -------------------------------------------------- | ----------- | ------------ | ------------------------------------------------------- |
+| 07  | [Catalog Backend](plans/07-catalog-backend.md)     | ✅ Complete | 05, 06       | Product CRUD, pagination, filtering                     |
 | 08  | [Inventory Backend](plans/08-inventory-backend.md) | ✅ Complete | 05, 07       | Stock management, optimistic locking, decrement/restore |
-| 09  | [Orders Backend](plans/09-orders-backend.md)       | ✅ Complete | 06, 07, 08   | Atomic order creation, cancellation, lifecycle |
-| 10  | [Payments Backend](plans/10-payments-backend.md)   | Not Started | 09           | Payment gateway, idempotency, Strategy pattern |
+| 09  | [Orders Backend](plans/09-orders-backend.md)       | ✅ Complete | 06, 07, 08   | Atomic order creation, cancellation, lifecycle          |
+| 10  | [Payments Backend](plans/10-payments-backend.md)   | Not Started | 09           | Payment gateway, idempotency, Strategy pattern          |
 
 ### Wave 5 — Frontend + Backend Testing (parallel tracks)
 
