@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Backend Architecture Documentation**:
+  - Comprehensive ARCHITECTURE.md covering system design and technical architecture
+  - Module structure and dependency graph visualization
+  - Domain model with entity relationship diagrams
+  - Data flow and sequence diagrams for order creation and authentication
+  - API design patterns and RESTful conventions
+  - Security architecture with JWT flow and RBAC details
+  - Database design with schema, indexing strategy, and migration approach
+  - Concurrency control and transaction management patterns
+  - Error handling with RFC 7807 Problem Detail responses
+  - Configuration management and environment variables
+  - Testing strategy with test pyramid
+  - Deployment architecture with Docker Compose
+  - Quick reference guides for module imports and design decisions
+  - Performance considerations and optimization strategies
+
 - **Catalog Backend (Feature 07)** ✅ COMPLETE:
   - Product entity with UUID primary key, optimistic locking (@Version), and SKU uniqueness
   - ProductRepository with custom @Query for filtered active product searches

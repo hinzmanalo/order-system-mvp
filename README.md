@@ -390,11 +390,21 @@ Inter-module communication uses direct service injection (same JVM), not REST ca
 
 ## Documentation
 
+### Project Documentation
+
 - **PRD**: [docs/prd.md](docs/prd.md) - Product Requirements Document
 - **MVP Spec**: [docs/OrderHub_MVP.md](docs/OrderHub_MVP.md) - MVP feature scope
 - **Implementation Plans**: [docs/plans/](docs/plans/) - 16 feature-by-feature plans
-- **Project Status**: [docs/project_status.md](docs/project_status.md) - Current progress (6/16 complete)
+- **Project Status**: [docs/project_status.md](docs/project_status.md) - Current progress
 - **Changelog**: [CHANGELOG.md](CHANGELOG.md) - Version history
+
+### Backend Documentation
+
+- **Architecture & System Design**: [backend/docs/ARCHITECTURE.md](backend/docs/ARCHITECTURE.md) - Comprehensive technical architecture
+- **API Quick Reference**: [backend/docs/API_QUICK_REFERENCE.md](backend/docs/API_QUICK_REFERENCE.md) - Endpoint reference guide
+- **Developer Guide**: [backend/docs/DEVELOPER_GUIDE.md](backend/docs/DEVELOPER_GUIDE.md) - Development workflow
+- **Deployment Guide**: [backend/docs/DEPLOYMENT_GUIDE.md](backend/docs/DEPLOYMENT_GUIDE.md) - Deployment instructions
+- **Troubleshooting**: [backend/docs/TROUBLESHOOTING.md](backend/docs/TROUBLESHOOTING.md) - Common issues and solutions
 
 ## Current Status
 
