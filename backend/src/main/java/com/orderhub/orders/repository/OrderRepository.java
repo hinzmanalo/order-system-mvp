@@ -47,10 +47,10 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     /**
      * Finds orders for a specific user with optional filters.
      *
-     * @param userId the user ID
-     * @param status optional order status filter
-     * @param after  optional minimum date (inclusive)
-     * @param before optional maximum date (inclusive)
+     * @param userId   the user ID
+     * @param status   optional order status filter
+     * @param after    optional minimum date (inclusive)
+     * @param before   optional maximum date (inclusive)
      * @param pageable pagination parameters
      * @return paginated list of orders matching the criteria
      */
@@ -63,8 +63,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("status") OrderStatus status,
             @Param("after") LocalDateTime after,
             @Param("before") LocalDateTime before,
-            Pageable pageable
-    );
+            Pageable pageable);
 
     /**
      * Finds all orders across all users with optional filters.
@@ -84,6 +83,5 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("status") OrderStatus status,
             @Param("after") LocalDateTime after,
             @Param("before") LocalDateTime before,
-            Pageable pageable
-    );
+            Pageable pageable);
 }

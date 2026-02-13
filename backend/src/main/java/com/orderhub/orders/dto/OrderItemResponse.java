@@ -36,7 +36,7 @@ public class OrderItemResponse {
      * @param subtotal    the calculated subtotal
      */
     public OrderItemResponse(UUID productId, String productName, int quantity,
-                             BigDecimal unitPrice, BigDecimal subtotal) {
+            BigDecimal unitPrice, BigDecimal subtotal) {
         this.productId = productId;
         this.productName = productName;
         this.quantity = quantity;

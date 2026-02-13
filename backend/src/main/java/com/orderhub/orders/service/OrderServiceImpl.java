@@ -49,9 +49,9 @@ public class OrderServiceImpl implements OrderService {
     private final InventoryService inventoryService;
 
     public OrderServiceImpl(OrderRepository orderRepository,
-                            UserRepository userRepository,
-                            ProductRepository productRepository,
-                            InventoryService inventoryService) {
+            UserRepository userRepository,
+            ProductRepository productRepository,
+            InventoryService inventoryService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
@@ -138,8 +138,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public Page<OrderResponse> getUserOrders(UUID userId, String status,
-                                             LocalDateTime after, LocalDateTime before,
-                                             Pageable pageable) {
+            LocalDateTime after, LocalDateTime before,
+            Pageable pageable) {
         logger.debug("Retrieving orders for user {} with filters: status={}, after={}, before={}",
                 userId, status, after, before);
 
@@ -189,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(String status, LocalDateTime after,
-                                            LocalDateTime before, Pageable pageable) {
+            LocalDateTime before, Pageable pageable) {
         logger.debug("Admin retrieving all orders with filters: status={}, after={}, before={}",
                 status, after, before);
 
@@ -287,8 +287,7 @@ public class OrderServiceImpl implements OrderService {
                 order.getTotalAmount(),
                 itemResponses,
                 order.getCreatedAt(),
-                order.getUpdatedAt()
-        );
+                order.getUpdatedAt());
     }
 
     /**
@@ -303,7 +302,6 @@ public class OrderServiceImpl implements OrderService {
                 item.getProduct().getName(),
                 item.getQuantity(),
                 item.getUnitPrice(),
-                item.getSubtotal()
-        );
+                item.getSubtotal());
     }
 }

@@ -26,9 +26,9 @@ public interface OrderService {
      * This is an atomic operation that:
      * </p>
      * <ol>
-     *     <li>Validates all products exist and are active</li>
-     *     <li>Decrements inventory for each item</li>
-     *     <li>Creates the order with status CONFIRMED</li>
+     * <li>Validates all products exist and are active</li>
+     * <li>Decrements inventory for each item</li>
+     * <li>Creates the order with status CONFIRMED</li>
      * </ol>
      * <p>
      * If any step fails, the entire transaction rolls back.
@@ -75,8 +75,8 @@ public interface OrderService {
      * @return paginated list of orders
      */
     Page<OrderResponse> getUserOrders(UUID userId, String status,
-                                      LocalDateTime after, LocalDateTime before,
-                                      Pageable pageable);
+            LocalDateTime after, LocalDateTime before,
+            Pageable pageable);
 
     /**
      * Cancels a user's order.
@@ -110,7 +110,7 @@ public interface OrderService {
      * @return paginated list of all orders
      */
     Page<OrderResponse> getAllOrders(String status, LocalDateTime after,
-                                     LocalDateTime before, Pageable pageable);
+            LocalDateTime before, Pageable pageable);
 
     /**
      * Retrieves any order by ID (admin operation).

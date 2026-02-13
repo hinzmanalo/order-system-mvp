@@ -45,7 +45,7 @@ public class OrderResponse {
      * @param updatedAt   when the order was last updated
      */
     public OrderResponse(UUID id, UUID userId, OrderStatus status, BigDecimal totalAmount,
-                         List<OrderItemResponse> items, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            List<OrderItemResponse> items, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.userId = userId;
         this.status = status;

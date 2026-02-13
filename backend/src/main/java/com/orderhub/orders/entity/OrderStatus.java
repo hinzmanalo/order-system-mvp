@@ -6,8 +6,8 @@ package com.orderhub.orders.entity;
  * Order lifecycle transitions:
  * </p>
  * <ul>
- *     <li>CONFIRMED → PAID (payment successful)</li>
- *     <li>CONFIRMED → CANCELLED (order cancelled before payment)</li>
+ * <li>CONFIRMED → PAID (payment successful)</li>
+ * <li>CONFIRMED → CANCELLED (order cancelled before payment)</li>
  * </ul>
  * <p>
  * Once an order reaches PAID or CANCELLED state, it cannot be modified.

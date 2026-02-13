@@ -117,8 +117,10 @@ public class OrderItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof OrderItem)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof OrderItem))
+            return false;
         OrderItem orderItem = (OrderItem) o;
         return id != null && id.equals(orderItem.id);
     }
