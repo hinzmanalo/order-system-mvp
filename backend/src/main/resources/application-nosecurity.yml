@@ -1,0 +1,11 @@
+# NoSecurity Profile
+# Disables JWT authentication — all endpoints are accessible without tokens.
+# A mock ADMIN user is injected into every request's SecurityContext.
+#
+# Usage: mvn spring-boot:run -Dspring-boot.run.profiles=dev,nosecurity
+#
+# WARNING: Never activate this profile in production!
+
+logging:
+  level:
+    com.orderhub.auth.security: DEBUG

@@ -2,11 +2,15 @@ import { HttpInterceptorFn, HttpErrorResponse, HttpEvent, HttpRequest, HttpHandl
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError, Observable, BehaviorSubject, filter, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  // Skip all token logic when auth bypass is enabled (dev mode)
+  if (environment.authBypass) return next(req);
+
   const authService = inject(AuthService);
   
   // Add access token to request if available
