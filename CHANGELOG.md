@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Status Update - 2026-02-14
+### Status Update - 2026-02-24
 
 **Testing Summary:**
 
@@ -20,6 +20,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration tests missing or need DB configuration fix
 - Frontend test specs need JWT token mocking improvements
 - All runtime features working correctly
+
+### Added
+
+- **NoSecurity Development Profile (Feature 18)** ✅ COMPLETE:
+  - `nosecurity` Spring profile that disables JWT authentication entirely for local development
+  - `DevSecurityConfig` — permissive security filter chain activated via `@Profile("nosecurity")`, permits all requests while keeping stateless sessions and CSRF disabled
+  - `DevAuthenticationFilter` — injects a mock ADMIN user (with both `ROLE_USER` and `ROLE_ADMIN`) into SecurityContext on every request, so `@PreAuthorize` annotations continue to work
+  - `application-nosecurity.yml` — profile configuration with debug-level logging for security classes
+  - Backend activation: `mvn spring-boot:run -Dspring-boot.run.profiles=dev,nosecurity`
+  - Frontend `authBypass` flag in `environment.development.ts` — skips auth guards and token attachment in interceptor
+  - Production safety: all components are `@Profile("nosecurity")`-scoped and produce console warnings
+
+- **Domain Design Documentation**:
+  - `backend/docs/domain design/catalog-domain.md` — Catalog module domain model, entity relationships, and design decisions
+  - `backend/docs/domain design/orders-domain.md` — Orders module domain model, state machine, and lifecycle rules
+
+- **Deployment & Hosting Documentation**:
+  - `docs/DEPLOYMENT_GUIDE.md` — Comprehensive production deployment guide covering cloud providers, CI/CD, environment configuration, and monitoring
+  - `docs/hosting-research.md` — Hosting platform research and comparison for OrderHub deployment
+
+- **Project Configuration**:
+  - `CLAUDE.md` — Claude Code project instructions for OrderHub MVP
+  - Updated `.github/copilot-instructions.md` with expanded project context
 
 ### Fixed
 

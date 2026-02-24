@@ -9,6 +9,8 @@ A production-ready Spring Boot application providing REST APIs for order managem
 > - [Developer Guide](docs/DEVELOPER_GUIDE.md) - Development workflow
 > - [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Production deployment
 > - [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues
+> - [Catalog Domain Design](docs/domain%20design/catalog-domain.md) - Catalog module domain model
+> - [Orders Domain Design](docs/domain%20design/orders-domain.md) - Orders module domain model
 
 ## Features
 
@@ -512,6 +514,20 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 - Database: localhost:5432/orderhub
 - Sample data seeded via V7\_\_seed_dev_data.sql
 
+**NoSecurity (`nosecurity`):**
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev,nosecurity
+```
+
+- Disables JWT authentication entirely — all endpoints accessible without tokens
+- Injects a mock ADMIN user (with `ROLE_USER` + `ROLE_ADMIN`) into every request's SecurityContext
+- `@PreAuthorize` annotations still work (mock user has all roles)
+- Debug-level logging for security classes
+- **WARNING**: Never activate this profile in production!
+
+**Frontend `authBypass`:** When using the `nosecurity` backend profile, set `authBypass: true` in `frontend/src/environments/environment.development.ts` to skip auth guards and token attachment on the frontend side.
+
 **Test (`test`):**
 
 ```bash
@@ -840,6 +856,16 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
 
 - `ROLE_USER` - Create orders, view own data
 - `ROLE_ADMIN` - Manage products, inventory, view all orders
+
+### Security Profiles
+
+| Profile       | Authentication            | Use Case                  |
+| ------------- | ------------------------- | ------------------------- |
+| `dev`         | JWT required              | Normal development        |
+| `nosecurity`  | Disabled (mock ADMIN)     | Quick API testing, demos  |
+| _(production)_ | JWT required             | Production deployment     |
+
+The `nosecurity` profile uses `DevSecurityConfig` + `DevAuthenticationFilter` to bypass JWT while keeping `@PreAuthorize` annotations functional via an auto-injected mock ADMIN user.
 
 ### Security Headers
 

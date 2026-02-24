@@ -57,13 +57,13 @@ docker compose up --build                          # Full stack
 - **DTOs**: Separate Request/Response classes, never expose entities directly via API
 - **Services**: Interface + `*Impl` pattern, `@Transactional` on write operations
 - **Exceptions**: Throw from `common.exception` package → RFC 7807 ProblemDetail responses via GlobalExceptionHandler
-- **Controllers**: 
+- **Controllers**:
   - Base path `/api/v1/`
   - Use `@Valid` for request body validation
   - Document with `@Tag`, `@Operation`, `@ApiResponses` for all status codes
   - Public endpoints: `/api/v1/{domain}/*`
   - Admin endpoints: `/api/v1/admin/{domain}/*` with `@PreAuthorize("hasRole('ADMIN')")`
-- **Logging**: 
+- **Logging**:
   - Use SLF4J logger in all service implementations
   - INFO for business events, WARN for validation failures, ERROR for exceptions
   - Parameterized logging: `logger.info("Order created: {}", orderId)`
@@ -85,7 +85,7 @@ docker compose up --build                          # Full stack
 - **Functional guards** (`CanActivateFn`) and **interceptors** (`HttpInterceptorFn`)
 - Lazy-loaded routes with `loadComponent`
 - **Reactive forms** with validation
-- **Guards**: 
+- **Guards**:
   - `authGuard`: Validates JWT token presence, redirects to login
   - `adminGuard`: Validates ADMIN role, redirects to home
 - **Interceptors**:
@@ -170,7 +170,7 @@ Every controller must include comprehensive Swagger annotations:
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
-    
+
     @Operation(
         summary = "Get product by ID",
         description = "Retrieves a single product by its unique identifier"
@@ -198,6 +198,7 @@ Admin endpoints follow a specific pattern:
 - All operations logged with admin context
 
 Example:
+
 ```java
 @Tag(name = "Admin Products", description = "Product management endpoints (Admin only)")
 @RestController

@@ -1,8 +1,8 @@
 # OrderHub MVP — Project Status
 
-**Last updated**: 2026-02-14 23:30 JST
-**Current phase**: MVP Complete - Test Refinement Phase 🎉
-**Overall progress**: 16 / 16 features complete
+**Last updated**: 2026-02-24 JST
+**Current phase**: MVP Complete - Post-MVP Enhancements 🎉
+**Overall progress**: 18 / 18 features complete
 
 ---
 
@@ -12,7 +12,7 @@
 | ----------- | ----- | -------- |
 | Not Started | 0     | —        |
 | In Progress | 0     | —        |
-| Complete    | 16    | 01–16    |
+| Complete    | 18    | 01–18    |
 | Blocked     | 0     | —        |
 
 ```
@@ -68,6 +68,13 @@ Progress: [██████████████████████] 1
 | #   | Feature                                                | Status      | Dependencies | Notes                                            |
 | --- | ------------------------------------------------------ | ----------- | ------------ | ------------------------------------------------ |
 | 16  | [Integration & Polish](plans/16-integration-polish.md) | ✅ Complete | All          | E2E, Swagger, FE tests, cleanup, security review |
+
+### Wave 7 — Post-MVP Enhancements
+
+| #   | Feature                                                            | Status      | Dependencies | Notes                                                              |
+| --- | ------------------------------------------------------------------ | ----------- | ------------ | ------------------------------------------------------------------ |
+| 17  | Bug Fixes & Quality Improvements                                   | ✅ Complete | 16           | PostgreSQL type casting, checkout navigation, order list errors     |
+| 18  | [Disable Security for Dev](plans/18-disable-security-dev.md)      | ✅ Complete | 06           | `nosecurity` profile, DevSecurityConfig, frontend authBypass flag  |
 
 ---
 
@@ -134,6 +141,9 @@ All critical path features are now complete! ✅
 
 | Date       | Change                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-24 | 📝 **Documentation Update**: Domain design docs (catalog, orders), deployment guide, hosting research, CLAUDE.md, updated copilot instructions.                      |
+| 2026-02-24 | 🔓 Feature 18 (Disable Security for Dev) completed. `nosecurity` Spring profile + frontend `authBypass` flag — all endpoints accessible without tokens.              |
+| 2026-02-24 | 🐛 Feature 17 (Bug Fixes) completed. PostgreSQL JPQL type casting, checkout navigation race condition, order list error handling.                                    |
 | 2026-02-14 | 📊 **Status Update**: Backend tests 100% passing (45 unit tests). Frontend: 76/120 tests passing, 44 failing due to JWT mock issues. Full stack operational.        |
 | 2026-02-14 | 🎉 **MVP COMPLETE!** Feature 16 (Integration & Polish) completed. Swagger docs, enhanced logging, frontend tests, code quality review, full-stack deployment ready. |
 | 2026-02-14 | Feature 15 (Frontend Admin) completed. Admin dashboard with product, inventory, user, and order management. All CRUD operations functional.                         |

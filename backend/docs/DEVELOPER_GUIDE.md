@@ -914,4 +914,30 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
 ---
 
-**Ready to build!** Refer to [README.md](../README.md) for setup and [API_QUICK_REFERENCE.md](API_QUICK_REFERENCE.md) for endpoints 😊
+## Development Without Authentication
+
+For rapid API testing or frontend development, you can disable JWT authentication entirely using the `nosecurity` profile:
+
+```bash
+# Backend: start without auth
+mvn spring-boot:run -Dspring-boot.run.profiles=dev,nosecurity
+```
+
+This activates:
+- `DevSecurityConfig` — permits all HTTP requests without tokens
+- `DevAuthenticationFilter` — injects a mock user with `ROLE_USER` + `ROLE_ADMIN` into every request
+
+All `@PreAuthorize` annotations continue to work since the mock user has both roles.
+
+**Frontend:** Set `authBypass: true` in `frontend/src/environments/environment.development.ts` to skip auth guards and token attachment in the HTTP interceptor.
+
+**Key files:**
+- `auth/security/DevSecurityConfig.java` — `@Profile("nosecurity")` security config
+- `auth/security/DevAuthenticationFilter.java` — `@Profile("nosecurity")` mock user filter
+- `application-nosecurity.yml` — profile-specific logging config
+
+> **WARNING**: Never activate the `nosecurity` profile in production environments.
+
+---
+
+**Ready to build!** Refer to [README.md](../README.md) for setup and [API_QUICK_REFERENCE.md](API_QUICK_REFERENCE.md) for endpoints

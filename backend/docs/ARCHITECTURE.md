@@ -130,24 +130,28 @@ User authentication, authorization, and session management.
 ```
 auth/
 ├── controller/
-│   └── AuthController.java      # Login, register, refresh endpoints
+│   ├── AuthController.java          # Login, register, refresh endpoints
+│   └── AdminUserController.java     # Admin user management
 ├── dto/
 │   ├── LoginRequest.java
 │   ├── LoginResponse.java
 │   ├── RegisterRequest.java
+│   ├── UpdateRoleRequest.java
 │   └── UserResponse.java
 ├── entity/
-│   ├── User.java               # User entity
-│   ├── Role.java               # USER, ADMIN enum
-│   └── RefreshToken.java       # Token persistence
+│   ├── User.java                    # User entity
+│   ├── Role.java                    # USER, ADMIN enum
+│   └── RefreshToken.java            # Token persistence
 ├── repository/
 │   ├── UserRepository.java
 │   └── RefreshTokenRepository.java
 ├── security/
-│   ├── SecurityConfig.java         # Spring Security configuration
-│   ├── JwtTokenProvider.java       # JWT creation/validation
+│   ├── SecurityConfig.java          # Production security (JWT required)
+│   ├── DevSecurityConfig.java       # Dev-only: permits all (@Profile("nosecurity"))
+│   ├── DevAuthenticationFilter.java # Dev-only: injects mock ADMIN user
+│   ├── JwtTokenProvider.java        # JWT creation/validation
 │   ├── JwtAuthenticationFilter.java # Request filter
-│   ├── JwtAuthEntryPoint.java      # Auth error handling
+│   ├── JwtAuthEntryPoint.java       # Auth error handling
 │   └── CustomUserDetailsService.java
 └── service/
     ├── AuthService.java
@@ -612,6 +616,8 @@ Admin Orders
 
 ### Security Configuration
 
+**Production (`SecurityConfig`):**
+
 ```java
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -631,6 +637,24 @@ public class SecurityConfig {
         .requestMatchers("/api/v1/**").authenticated())
 }
 ```
+
+**Development (`DevSecurityConfig` — `nosecurity` profile):**
+
+```java
+@Profile("nosecurity")
+public class DevSecurityConfig {
+    // Permits all requests without authentication
+    .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+
+    // DevAuthenticationFilter injects mock ADMIN user into SecurityContext
+    // so @PreAuthorize("hasRole('ADMIN')") still works
+}
+```
+
+| Profile      | Config Class        | Auth Required | Mock User |
+| ------------ | ------------------- | ------------- | --------- |
+| `dev`        | `SecurityConfig`    | Yes (JWT)     | No        |
+| `nosecurity` | `DevSecurityConfig` | No            | ADMIN     |
 
 ---
 
@@ -900,9 +924,10 @@ public class GlobalExceptionHandler {
 ### Configuration Hierarchy
 
 ```
-application.yml          # Base configuration
-├── application-dev.yml  # Development overrides
-└── application-test.yml # Test overrides
+application.yml               # Base configuration
+├── application-dev.yml       # Development overrides (PostgreSQL, SQL logging)
+├── application-nosecurity.yml # NoSecurity profile (disables JWT auth)
+└── application-test.yml      # Test overrides
 ```
 
 ### Environment-Specific Settings
