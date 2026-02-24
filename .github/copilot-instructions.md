@@ -1,20 +1,29 @@
 # OrderHub MVP - AI Agent Instructions
 
+**Project Status**: ✅ MVP Complete (16/16 features implemented)  
+**Backend Tests**: ✅ 45 unit tests passing (100% success rate)  
+**Last Updated**: February 14, 2026
+
 ## Tech Stack
 
-- **Backend**: Java 17, Spring Boot 3, Spring Data JPA, PostgreSQL 16, Flyway, Maven
+- **Backend**: Java 17, Spring Boot 3.2.2, Spring Data JPA, PostgreSQL 16, Flyway, Maven
 - **Frontend**: Angular 17+ (standalone components), TypeScript 5.x, Angular Signals, SCSS
 - **Infrastructure**: Docker Compose (`docker compose up --build`)
+- **Documentation**: OpenAPI 3 / Swagger UI at `/swagger-ui.html`
+- **Security**: JWT (access + refresh tokens), BCrypt password hashing
+- **Testing**: JUnit 5, >80% service coverage
 
 ## Project Structure
 
 ```
 backend/src/main/java/com/orderhub/{module}/
-├── controller/    # REST endpoints (@RestController, /api/v1/*)
-├── dto/           # Request/Response DTOs with Jakarta validation
-├── entity/        # JPA entities (UUID PKs, @Version for optimistic locking)
-├── repository/    # Spring Data JPA interfaces
-└── service/       # Interface + Impl pattern (@Transactional on writes)
+├── controller/         # Public REST endpoints (@RestController, /api/v1/*)
+├── admin/controller/   # Admin REST endpoints (@PreAuthorize("hasRole('ADMIN')"))
+├── dto/                # Request/Response DTOs with Jakarta validation
+├── entity/             # JPA entities (UUID PKs, @Version for optimistic locking)
+├── repository/         # Spring Data JPA interfaces
+├── service/            # Interface + Impl pattern (@Transactional on writes)
+└── security/           # Security configs (auth module only)
 
 frontend/src/app/
 ├── core/          # Services, guards, interceptors, models
@@ -44,18 +53,51 @@ docker compose up --build                          # Full stack
 
 ### Backend (Java)
 
-- **Entities**: UUID primary keys, `@CreationTimestamp`/`@UpdateTimestamp`, `@Version` on Inventory/Product
-- **DTOs**: Separate Request/Response classes, never expose entities directly
+- **Entities**: UUID primary keys (`@GeneratedValue(strategy = GenerationType.UUID)`), `@CreationTimestamp`/`@UpdateTimestamp`, `@Version` on Inventory/Product
+- **DTOs**: Separate Request/Response classes, never expose entities directly via API
 - **Services**: Interface + `*Impl` pattern, `@Transactional` on write operations
-- **Exceptions**: Throw from `common.exception` package → RFC 7807 ProblemDetail responses
-- **Controllers**: Base path `/api/v1/`, use `@Valid`, document with `@Operation`/`@ApiResponse`
+- **Exceptions**: Throw from `common.exception` package → RFC 7807 ProblemDetail responses via GlobalExceptionHandler
+- **Controllers**: 
+  - Base path `/api/v1/`
+  - Use `@Valid` for request body validation
+  - Document with `@Tag`, `@Operation`, `@ApiResponses` for all status codes
+  - Public endpoints: `/api/v1/{domain}/*`
+  - Admin endpoints: `/api/v1/admin/{domain}/*` with `@PreAuthorize("hasRole('ADMIN')")`
+- **Logging**: 
+  - Use SLF4J logger in all service implementations
+  - INFO for business events, WARN for validation failures, ERROR for exceptions
+  - Parameterized logging: `logger.info("Order created: {}", orderId)`
+- **Security**:
+  - JWT access tokens (15-min expiry), refresh tokens (7-day expiry)
+  - Token rotation on refresh
+  - BCrypt password encoding with strength 10
+  - CORS configured for `http://localhost:4200` in dev
+- **OpenAPI Documentation**:
+  - All controllers must have `@Tag` annotations
+  - All endpoints must have `@Operation` (summary + description)
+  - All responses must have `@ApiResponses` (200, 201, 400, 401, 403, 404, 409, 422 as applicable)
+  - Protected endpoints must have `@SecurityRequirement(name = "bearer-jwt")`
 
 ### Frontend (Angular)
 
 - **Standalone components** only (no NgModules)
-- **Signals** for state management, **Observables** for HTTP
+- **Signals** for reactive state management, **Observables** for HTTP/async
 - **Functional guards** (`CanActivateFn`) and **interceptors** (`HttpInterceptorFn`)
-- Lazy-loaded routes, reactive forms
+- Lazy-loaded routes with `loadComponent`
+- **Reactive forms** with validation
+- **Guards**: 
+  - `authGuard`: Validates JWT token presence, redirects to login
+  - `adminGuard`: Validates ADMIN role, redirects to home
+- **Interceptors**:
+  - `authInterceptor`: Attaches JWT Bearer token to all requests
+- **Services**:
+  - Use `inject()` in constructors (modern Angular pattern)
+  - Store auth state in signals (`authService.currentUser()`)
+  - HTTP errors handled with toasts or error pages
+- **Routing**:
+  - Public routes: `/login`, `/register`, `/products`
+  - Protected routes: `/cart`, `/checkout`, `/orders`
+  - Admin routes: `/admin/*` (dashboard, products, inventory, users, orders)
 
 ### Database
 
@@ -69,6 +111,36 @@ docker compose up --build                          # Full stack
 3. Payment amount must **exactly match** order total (`BigDecimal.compareTo() == 0`)
 4. **Idempotency-Key header** required for payments (prevents duplicate processing)
 5. Order lifecycle: `CONFIRMED → PAID` or `CONFIRMED → CANCELLED`
+6. Order cancellation **restores inventory** atomically
+7. Only CONFIRMED orders can be cancelled (PAID/CANCELLED orders cannot be modified)
+8. Only ACTIVE products can be ordered
+9. Stock must be available before order creation (checked via optimistic locking)
+
+## Testing Requirements
+
+### Backend Testing
+
+- **Unit Tests**: JUnit 5 with Mockito for service layer testing
+- **Coverage**: Maintain >80% service coverage
+- **Test Structure**: Given-When-Then pattern
+- **Naming**: `methodName_scenario_expectedBehavior()`
+- **Test Categories**:
+  - Happy path scenarios
+  - Validation failures (400 errors)
+  - Not found scenarios (404 errors)
+  - Conflict scenarios (409 errors for optimistic locking)
+  - Business rule violations
+- **Integration Tests**: Use `@DataJpaTest` for repository tests
+- **Current Status**: 45 unit tests passing (100% success rate)
+
+### Frontend Testing
+
+- **Framework**: Jasmine + Karma
+- **Test Types**: Component specs, service specs, guard specs
+- **Async Handling**: Use `fakeAsync`, `tick`, `flush` for async operations
+- **HTTP Mocking**: Use `HttpTestingController` from `@angular/common/http/testing`
+- **Signal Testing**: Access signal values with `signal()` in tests
+- **Current Status**: Test infrastructure in place (76/120 passing)
 
 ## Module Dependencies
 
@@ -83,10 +155,58 @@ Inter-module calls use direct service injection (same JVM), not REST.
 - Implementation plans: [docs/plans/](../docs/plans/) (phases 01-16)
 - PRD: [docs/prd.md](../docs/prd.md)
 - MVP spec: [docs/OrderHub_MVP.md](../docs/OrderHub_MVP.md)
+- Swagger UI: `http://localhost:8080/swagger-ui.html` (when backend is running)
+- Backend docs: [backend/DOCUMENTATION.md](../backend/DOCUMENTATION.md)
+- Frontend docs: [frontend/docs/](../frontend/docs/)
 
-## others
+## API Development Guidelines
 
-Always put smile emkoji at the end of the message.
+### OpenAPI/Swagger Documentation
+
+Every controller must include comprehensive Swagger annotations:
+
+```java
+@Tag(name = "Products", description = "Product catalog endpoints")
+@RestController
+@RequestMapping("/api/v1/products")
+public class ProductController {
+    
+    @Operation(
+        summary = "Get product by ID",
+        description = "Retrieves a single product by its unique identifier"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Product found"),
+        @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    @SecurityRequirement(name = "bearer-jwt")  // For protected endpoints only
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID id) {
+        // implementation
+    }
+}
+```
+
+### Admin Endpoints
+
+Admin endpoints follow a specific pattern:
+
+- Path: `/api/v1/admin/{domain}/*`
+- Security: `@PreAuthorize("hasRole('ADMIN')")`
+- Separate controller class: `Admin{Domain}Controller`
+- Error responses include 403 for non-admin users
+- All operations logged with admin context
+
+Example:
+```java
+@Tag(name = "Admin Products", description = "Product management endpoints (Admin only)")
+@RestController
+@RequestMapping("/api/v1/admin/products")
+@PreAuthorize("hasRole('ADMIN')")
+public class AdminProductController {
+    // implementation
+}
+```
 
 # Copilot Instructions for Java Logging and Comments
 
